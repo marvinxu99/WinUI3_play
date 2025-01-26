@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MVVM_play (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "MVVM_play (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

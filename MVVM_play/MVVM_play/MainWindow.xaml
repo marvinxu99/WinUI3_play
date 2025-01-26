@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="MVVM_play.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:vm="using:MVVM_play.ViewModels"
+    mc:Ignorable="d"
+    Title="MVVM_play">
+
+    <Grid>
+        <Grid.DataContext>
+            <vm:MountainViewModel />
+        </Grid.DataContext>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Button -->
+        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0">
+            <Button Content="Add Mountain" Command="{Binding AddMountainCommand}" />
+        </StackPanel>
+
+        <controls:DataGrid AutoGenerateColumns="False" 
+                           ItemsSource="{Binding Mountains}" 
+                           GridLinesVisibility="All" 
+                           HeadersVisibility="Column" 
+                           CanUserSortColumns="True"
+                           Grid.Row="1">
+            <controls:DataGrid.Columns>
+                <controls:DataGridTextColumn Header="ID" Binding="{Binding Id}" />
+                <controls:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                <controls:DataGridTextColumn Header="Height" Binding="{Binding Height}" />
+            </controls:DataGrid.Columns>
+        </controls:DataGrid>
+    </Grid>
+</Window>
