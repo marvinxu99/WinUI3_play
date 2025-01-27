@@ -6,36 +6,36 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:vm="using:MVVM_play.ViewModels"
+    xmlns:local="using:MVVM_play.Common"
     mc:Ignorable="d"
     Title="MVVM_play">
 
-    <Grid>
-        <Grid.DataContext>
-            <vm:MountainViewModel />
-        </Grid.DataContext>
-        
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <Grid x:Name="RootGrid">
+        <!-- Resources defined in a valid parent container -->
+        <Grid.Resources>
+            <local:MenuItemTemplateSelector x:Key="selector">
+                <local:MenuItemTemplateSelector.ItemTemplate>
+                    <DataTemplate x:DataType="local:Category">
+                        <NavigationViewItem 
+                                    Content="{x:Bind Name}"
+                                    ToolTipService.ToolTip="{x:Bind Tooltip}">
+                            <NavigationViewItem.Icon>
+                                <SymbolIcon Symbol="{x:Bind Glyph}" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                    </DataTemplate>
+                </local:MenuItemTemplateSelector.ItemTemplate>
+            </local:MenuItemTemplateSelector>
+        </Grid.Resources>
 
-        <!-- Button -->
-        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0">
-            <Button Content="Add Mountain" Command="{Binding AddMountainCommand}" />
+        <!-- NavigationView -->
+        <NavigationView x:Name="nvSample"
+                                 MenuItemTemplateSelector="{StaticResource selector}"
+                                 MenuItemsSource="{x:Bind Categories, Mode=OneWay}" />
+        <StackPanel>
+            <Frame Margin="0,0,0,0" x:Name="contentFrame" />
         </StackPanel>
-
-        <controls:DataGrid AutoGenerateColumns="False" 
-                           ItemsSource="{Binding Mountains}" 
-                           GridLinesVisibility="All" 
-                           HeadersVisibility="Column" 
-                           CanUserSortColumns="True"
-                           Grid.Row="1">
-            <controls:DataGrid.Columns>
-                <controls:DataGridTextColumn Header="ID" Binding="{Binding Id}" />
-                <controls:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                <controls:DataGridTextColumn Header="Height" Binding="{Binding Height}" />
-            </controls:DataGrid.Columns>
-        </controls:DataGrid>
     </Grid>
+
+  
 </Window>
