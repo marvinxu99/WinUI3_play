@@ -18,6 +18,7 @@
                     <DataTemplate x:DataType="local:Category">
                         <NavigationViewItem 
                                     Content="{x:Bind Name}"
+                                    Tag="{x:Bind Tag}"
                                     ToolTipService.ToolTip="{x:Bind Tooltip}">
                             <NavigationViewItem.Icon>
                                 <SymbolIcon Symbol="{x:Bind Glyph}" />
@@ -29,12 +30,36 @@
         </Grid.Resources>
 
         <!-- NavigationView -->
-        <NavigationView x:Name="nvSample"
-                                 MenuItemTemplateSelector="{StaticResource selector}"
-                                 MenuItemsSource="{x:Bind Categories, Mode=OneWay}" />
-        <StackPanel>
-            <Frame Margin="0,0,0,0" x:Name="contentFrame" />
-        </StackPanel>
+        <NavigationView x:Name="MainNavigationView"
+                        MenuItemTemplateSelector="{StaticResource selector}"
+                        MenuItemsSource="{x:Bind Categories, Mode=OneWay}" 
+                        IsTabStop="False" 
+                        Loaded="NavigationView_Loaded"
+                        SelectionChanged="NavigationView_SelectionChanged">
+
+            <!-- FooterMenuItems 
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Content="Account" Tag="MVVM_play.Views.AboutPage">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="/Assets/icons8-user-48.png"
+                                    ShowAsMonochrome="False" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="About" Tag="MVVM_play.Views.AboutPage">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon UriSource="/Assets/About.png"
+                                    ShowAsMonochrome="False" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.FooterMenuItems>
+            -->
+
+            <!-- Content Frame -->
+            <NavigationView.Content>
+                <Frame x:Name="ContentFrame" Margin="0,0,0,0" Padding="16" />
+            </NavigationView.Content>
+            
+        </NavigationView>
     </Grid>
 
   
