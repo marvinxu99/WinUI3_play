@@ -14,5 +14,5 @@ public interface INavigation
 
     List<NavigationViewItem> GetNavigationViewItems(Type type, string title);
 
-    void SetCurrentNavigationViewItem(NavigationViewItem item);
+    void SetCurrentNavigationViewItem(NavigationViewItem item, NavigationView sender);
 }

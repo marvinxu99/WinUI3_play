@@ -34,10 +34,17 @@
                         MenuItemTemplateSelector="{StaticResource selector}"
                         MenuItemsSource="{x:Bind Categories, Mode=OneWay}" 
                         IsTabStop="False" 
+                        IsBackButtonVisible="Collapsed"
+                        IsSettingsVisible="True"
                         Loaded="NavigationView_Loaded"
                         SelectionChanged="NavigationView_SelectionChanged">
 
-            <!-- FooterMenuItems 
+            <NavigationView.PaneCustomContent>
+                <HyperlinkButton NavigateUri="https://www.healthlinkbc.ca/"
+                                 Margin="8 0">HealthLink BC</HyperlinkButton>
+            </NavigationView.PaneCustomContent>
+
+            <!-- FooterMenuItems  NOT WORKING
             <NavigationView.FooterMenuItems>
                 <NavigationViewItem Content="Account" Tag="MVVM_play.Views.AboutPage">
                     <NavigationViewItem.Icon>
@@ -45,7 +52,7 @@
                                     ShowAsMonochrome="False" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="About" Tag="MVVM_play.Views.AboutPage">
+                <NavigationViewItem Content="About" Tag="MVVM_play.Views.MountainPage">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="/Assets/About.png"
                                     ShowAsMonochrome="False" />
@@ -53,7 +60,8 @@
                 </NavigationViewItem>
             </NavigationView.FooterMenuItems>
             -->
-
+           
+         
             <!-- Content Frame -->
             <NavigationView.Content>
                 <Frame x:Name="ContentFrame" Margin="0,0,0,0" Padding="16" />

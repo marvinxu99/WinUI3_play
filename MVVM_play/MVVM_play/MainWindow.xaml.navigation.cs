@@ -15,34 +15,15 @@ public sealed partial class MainWindow : Window, INavigation
     private void NavigationView_Loaded(object sender, RoutedEventArgs e)
     {
         var item = GetNavigationViewItems().FirstOrDefault();
-
-        if (item != null && item.Tag != null)
-        {
-            Type? pageType = Type.GetType(item.Tag.ToString());
-
-            if (pageType != null)
-            {
-                ContentFrame.Navigate(pageType);
-                ((NavigationView)sender).Header = item.Content;
-            }
-            else
-            {
-                // Log or handle the case where the Tag does not resolve to a valid Type
-                Debug.WriteLine($"Failed to resolve page type from Tag: {item.Tag}");
-            }
-        }
-        else
-        {
-            // Handle the case where there are no items or no valid Tag
-            Debug.WriteLine("No NavigationViewItem found or Tag is null.");
-        }
+        SetCurrentNavigationViewItem(item, (NavigationView)sender);
     }
 
     private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
         if (args.IsSettingsSelected)
         {
-            ContentFrame.Navigate(typeof(MountainPage));   //TODO:
+            ContentFrame.Navigate(typeof(SettingsPage));
+            sender.Header = "Settings"; // Update the header
         }
         else
         {
@@ -97,11 +78,11 @@ public sealed partial class MainWindow : Window, INavigation
         }
 
         // Add FooterMenuItems if defined statically
-        if (MainNavigationView.FooterMenuItems != null)
-        {
-            result.AddRange(MainNavigationView.FooterMenuItems.OfType<NavigationViewItem>());
-        }
-
+        //if (MainNavigationView.FooterMenuItems != null)
+        //{
+        //result.AddRange(MainNavigationView.FooterMenuItems.OfType<NavigationViewItem>());
+        //}
+        //result.AddRange(MainNavigationView.FooterMenuItems.Select(i => (NavigationViewItem)i));
 
         return result;
     }
@@ -116,25 +97,41 @@ public sealed partial class MainWindow : Window, INavigation
         return GetNavigationViewItems(type).Where(ni => ni.Content.ToString() == title).ToList();
     }
 
-    public void SetCurrentNavigationViewItem(NavigationViewItem item)
+    public void SetCurrentNavigationViewItem(NavigationViewItem item, NavigationView sender)
     {
-        if (item == null)
+        if (item != null && item.Tag != null)
         {
-            return;
+            Type? pageType = Type.GetType(item.Tag.ToString());
+
+            if (pageType != null)
+            {
+                ContentFrame.Navigate(pageType);
+                sender.Header = item.Content;
+            }
+            else
+            {
+                // Log or handle the case where the Tag does not resolve to a valid Type
+                Debug.WriteLine($"Failed to resolve page type from Tag: {item.Tag}");
+            }
+        }
+        else
+        {
+            // Handle the case where there are no items or no valid Tag
+            Debug.WriteLine("No NavigationViewItem found or Tag is null.");
         }
 
-        if (item.Tag == null)
-        {
-            return;
-        }
-
-        ContentFrame.Navigate(Type.GetType(item.Tag.ToString()), item.Content);
-        MainNavigationView.Header = item.Content;
-        MainNavigationView.SelectedItem = item;
     }
 
     public NavigationViewItem GetCurrentNavigationViewItem()
     {
-        return MainNavigationView.SelectedItem as NavigationViewItem;
+        //return MainNavigationView.SelectedItem as NavigationViewItem;
+        var selectedItem = MainNavigationView.SelectedItem as NavigationViewItem;
+
+        if (selectedItem == null)
+        {
+            throw new InvalidOperationException("No NavigationViewItem is currently selected.");
+        }
+
+        return selectedItem;
     }
 }
