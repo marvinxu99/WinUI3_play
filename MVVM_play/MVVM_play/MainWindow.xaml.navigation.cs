@@ -37,7 +37,7 @@ public sealed partial class MainWindow : Window, INavigation
         }
         else
         {
-            if (args.SelectedItem is Category category)
+            if (args.SelectedItem is MenuItem category)
             {
                 if (!string.IsNullOrEmpty(category.Tag))
                 {
@@ -63,11 +63,11 @@ public sealed partial class MainWindow : Window, INavigation
         List<NavigationViewItem> result = new();
 
         // If using MenuItemsSource (dynamic items)
-        if (MainNavigationView.MenuItemsSource is IEnumerable<CategoryBase> categories)
+        if (MainNavigationView.MenuItemsSource is IEnumerable<MenuItemBase> categories)
         {
             foreach (var category in categories)
             {
-                if (category is Category dynamicCategory)
+                if (category is MenuItem dynamicCategory)
                 {
                     // Create a NavigationViewItem manually
                     var navigationItem = new NavigationViewItem

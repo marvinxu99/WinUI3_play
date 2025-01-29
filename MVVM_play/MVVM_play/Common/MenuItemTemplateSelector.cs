@@ -17,6 +17,7 @@ namespace MVVM_play.Common
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
+
             return GetTemplate(item);
         }
 

@@ -7,8 +7,13 @@ namespace MVVM_play.ViewModels;
 
 public partial class MountainViewModel : ObservableObject
 {
-    [ObservableProperty]
-    private ObservableCollection<Mountain> mountains;
+
+    private ObservableCollection<Mountain> _mountains = null!;
+    public ObservableCollection<Mountain> Mountains
+    {
+        get => _mountains;
+        set => SetProperty(ref _mountains, value);
+    }
 
     public MountainViewModel()
     {

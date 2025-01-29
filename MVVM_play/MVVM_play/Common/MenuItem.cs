@@ -3,9 +3,9 @@ using Microsoft.UI.Xaml.Controls;
 namespace MVVM_play.Common
 {
 
-    public class CategoryBase { }
+    public class MenuItemBase { }
 
-    public class Category : CategoryBase
+    public class MenuItem : MenuItemBase
     {
         public string Name { get; set; } = null!;
         public string Tooltip { get; set; } = null!;
@@ -13,9 +13,9 @@ namespace MVVM_play.Common
         public string Tag { get; set; } = null!;
     }
 
-    public class Separator : CategoryBase { }
+    public class Separator : MenuItemBase { }
 
-    public class Header : CategoryBase
+    public class Header : MenuItemBase
     {
         public string? Name { get; set; }
     }

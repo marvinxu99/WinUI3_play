@@ -19,7 +19,7 @@
             <!-- Template Selector -->
             <local:MenuItemTemplateSelector x:Key="selector">
                 <local:MenuItemTemplateSelector.ItemTemplate>
-                    <DataTemplate x:DataType="local:Category">
+                    <DataTemplate x:DataType="local:MenuItem">
                         <NavigationViewItem 
                                     Content="{x:Bind Name}"
                                     Tag="{x:Bind Tag}"
