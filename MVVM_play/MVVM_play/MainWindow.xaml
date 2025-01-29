@@ -7,12 +7,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:local="using:MVVM_play.Common"
+    xmlns:vm="using:MVVM_play.ViewModels"
     mc:Ignorable="d"
     Title="MVVM_play">
 
     <Grid x:Name="RootGrid">
         <!-- Resources defined in a valid parent container -->
         <Grid.Resources>
+            <vm:MainViewModel x:Key="MainViewModelInstance" />
+
+            <!-- Template Selector -->
             <local:MenuItemTemplateSelector x:Key="selector">
                 <local:MenuItemTemplateSelector.ItemTemplate>
                     <DataTemplate x:DataType="local:Category">
@@ -31,8 +35,10 @@
 
         <!-- NavigationView -->
         <NavigationView x:Name="MainNavigationView"
+                        DataContext="{StaticResource MainViewModelInstance}"
                         MenuItemTemplateSelector="{StaticResource selector}"
-                        MenuItemsSource="{x:Bind Categories, Mode=OneWay}" 
+                        MenuItemsSource="{Binding Categories, Mode=OneWay}" 
+                        FooterMenuItemsSource="{Binding FooterMenuItems, Mode=OneWay}"
                         IsTabStop="False" 
                         IsBackButtonVisible="Collapsed"
                         IsSettingsVisible="True"
@@ -43,23 +49,6 @@
                 <HyperlinkButton NavigateUri="https://www.healthlinkbc.ca/"
                                  Margin="8 0">HealthLink BC</HyperlinkButton>
             </NavigationView.PaneCustomContent>
-
-            <!-- FooterMenuItems NOT WORKING
-            <NavigationView.FooterMenuItems>
-                <NavigationViewItem Content="Account" Tag="MVVM_play.Views.AccountPage">
-                    <NavigationViewItem.Icon>
-                        <BitmapIcon UriSource="/Assets/icons8-user-48.png"
-                                    ShowAsMonochrome="False" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="About" Tag="MVVM_play.Views.AboutPage">
-                    <NavigationViewItem.Icon>
-                        <BitmapIcon UriSource="/Assets/About.png"
-                                    ShowAsMonochrome="False" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-            </NavigationView.FooterMenuItems>
-            -->
 
             <!-- Content Frame -->
             <NavigationView.Content>
