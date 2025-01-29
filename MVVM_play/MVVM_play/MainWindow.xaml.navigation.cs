@@ -53,20 +53,7 @@ public sealed partial class MainWindow : Window, INavigation
                     }
                 }
             }
-            // Handle statically defined FooterMenuItems
-            if (args.SelectedItemContainer is NavigationViewItem selectedItem && selectedItem.Tag is string tag)
-            {
-                Type? pageType = Type.GetType(tag);
-                if (pageType != null)
-                {
-                    ContentFrame.Navigate(pageType);
-                    sender.Header = selectedItem.Content;
-                }
-                else
-                {
-                    Debug.WriteLine($"Page not found for Tag: {tag}");
-                }
-            }
+
         }
     }
 
@@ -105,13 +92,6 @@ public sealed partial class MainWindow : Window, INavigation
             //}
 
         }
-
-        // Add FooterMenuItems if defined statically
-        //if (MainNavigationView.FooterMenuItems != null)
-        //{
-        //result.AddRange(MainNavigationView.FooterMenuItems.OfType<NavigationViewItem>());
-        //}
-        //result.AddRange(MainNavigationView.FooterMenuItems.Select(i => (NavigationViewItem)i));
 
         return result;
     }

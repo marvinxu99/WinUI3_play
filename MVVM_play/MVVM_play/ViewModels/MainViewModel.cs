@@ -17,11 +17,11 @@ public partial class MainViewModel : ObservableObject
     {
         Categories = new ObservableCollection<CategoryBase>
         {
-            new Category { Name = "Category 1", Glyph = Symbol.Home, Tooltip = "This is category 1", Tag = "MVVM_play.Views.MountainPage" },
-            new Category { Name = "Category 2", Glyph = Symbol.Keyboard, Tooltip = "This is category 2", Tag = "MVVM_play.Views.MountainPage" },
+            new Category { Name = "Summary", Glyph = Symbol.Home, Tooltip = "This is category 1", Tag = "MVVM_play.Views.MountainPage" },
+            new Category { Name = "Orders", Glyph = Symbol.Keyboard, Tooltip = "This is category 2", Tag = "MVVM_play.Views.MountainPage" },
             new Separator(),
-            new Category { Name = "Category 3", Glyph = Symbol.Library, Tooltip = "This is category 3", Tag = "MVVM_play.Views.AboutPage" },
-            new Category { Name = "Category 4", Glyph = Symbol.Mail, Tooltip = "This is category 4", Tag = "MVVM_play.Views.AboutPage" }
+            new Category { Name = "MAR", Glyph = Symbol.Library, Tooltip = "This is category 3", Tag = "MVVM_play.Views.AboutPage" },
+            new Category { Name = "MAR Summary", Glyph = Symbol.Mail, Tooltip = "This is category 4", Tag = "MVVM_play.Views.AboutPage" }
         };
 
         FooterMenuItems = new ObservableCollection<CategoryBase>
