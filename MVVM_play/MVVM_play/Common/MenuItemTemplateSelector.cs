@@ -6,28 +6,43 @@ namespace MVVM_play.Common
 {
 
     [ContentProperty(Name = "ItemTemplate")]
-    class MenuItemTemplateSelector : DataTemplateSelector
+    public class MenuItemTemplateSelector : DataTemplateSelector
     {
         public DataTemplate? ItemTemplate { get; set; }
 
         protected override DataTemplate SelectTemplateCore(object item)
         {
-            return item is Separator ? SeparatorTemplate : item is Header ? HeaderTemplate : ItemTemplate;
+            return GetTemplate(item);
         }
 
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
-            return item is Separator ? SeparatorTemplate : item is Header ? HeaderTemplate : ItemTemplate;
+            return GetTemplate(item);
         }
 
-        internal DataTemplate HeaderTemplate = (DataTemplate)XamlReader.Load(
-            @"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-                   <NavigationViewItemHeader Content='{Binding Name}' />
-                  </DataTemplate>");
+        private DataTemplate GetTemplate(object item)
+        {
+            //return item is Separator ? SeparatorTemplate : item is Header ? HeaderTemplate : ItemTemplate;
+            if (item is Separator)
+            {
+                return SeparatorTemplate;
+            }
+            else if (item is Header)
+            {
+                return HeaderTemplate;
+            }
+            return ItemTemplate ?? new DataTemplate();
+        }
 
-        internal DataTemplate SeparatorTemplate = (DataTemplate)XamlReader.Load(
-            @"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-                    <NavigationViewItemSeparator />
-                  </DataTemplate>");
+        public DataTemplate HeaderTemplate { get; } = (DataTemplate)XamlReader.Load(@"
+            <DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+                <NavigationViewItemHeader Content='{Binding Name}' />
+            </DataTemplate>");
+
+        public DataTemplate SeparatorTemplate { get; } = (DataTemplate)XamlReader.Load(@"
+            <DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+                <NavigationViewItemSeparator />
+            </DataTemplate>");
+
     }
 }

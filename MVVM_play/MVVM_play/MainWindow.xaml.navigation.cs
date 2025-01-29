@@ -14,8 +14,18 @@ public sealed partial class MainWindow : Window, INavigation
 {
     private void NavigationView_Loaded(object sender, RoutedEventArgs e)
     {
-        var item = GetNavigationViewItems().FirstOrDefault();
-        SetCurrentNavigationViewItem(item, (NavigationView)sender);
+        try
+        {
+            var item = GetNavigationViewItems().FirstOrDefault();
+            if (item != null)
+            {
+                SetCurrentNavigationViewItem(item, (NavigationView)sender);
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in NavigationView_Loaded: {ex.Message}");
+        }
     }
 
     private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -27,16 +37,35 @@ public sealed partial class MainWindow : Window, INavigation
         }
         else
         {
-            var selectedItem = (Category)args.SelectedItem;
-            Type? pageType = Type.GetType(selectedItem.Tag.ToString());
-            if (pageType != null)
+            if (args.SelectedItem is Category category)
             {
-                ContentFrame.Navigate(pageType);
-                sender.Header = selectedItem.Name; // Update the header
+                if (!string.IsNullOrEmpty(category.Tag))
+                {
+                    Type? pageType = Type.GetType(category.Tag);
+                    if (pageType != null)
+                    {
+                        ContentFrame.Navigate(pageType);
+                        sender.Header = category.Name;      // Update the header
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Page not found for Tag: {category.Tag}");
+                    }
+                }
             }
-            else
+            // Handle statically defined FooterMenuItems
+            if (args.SelectedItemContainer is NavigationViewItem selectedItem && selectedItem.Tag is string tag)
             {
-                Debug.WriteLine($"Page not found: {selectedItem.Tag}");
+                Type? pageType = Type.GetType(tag);
+                if (pageType != null)
+                {
+                    ContentFrame.Navigate(pageType);
+                    sender.Header = selectedItem.Content;
+                }
+                else
+                {
+                    Debug.WriteLine($"Page not found for Tag: {tag}");
+                }
             }
         }
     }
@@ -99,9 +128,9 @@ public sealed partial class MainWindow : Window, INavigation
 
     public void SetCurrentNavigationViewItem(NavigationViewItem item, NavigationView sender)
     {
-        if (item != null && item.Tag != null)
+        if (item?.Tag is string tag && !string.IsNullOrEmpty(tag))
         {
-            Type? pageType = Type.GetType(item.Tag.ToString());
+            Type? pageType = Type.GetType(tag);
 
             if (pageType != null)
             {
@@ -111,7 +140,7 @@ public sealed partial class MainWindow : Window, INavigation
             else
             {
                 // Log or handle the case where the Tag does not resolve to a valid Type
-                Debug.WriteLine($"Failed to resolve page type from Tag: {item.Tag}");
+                Debug.WriteLine($"Failed to resolve page type from Tag: {tag}");
             }
         }
         else

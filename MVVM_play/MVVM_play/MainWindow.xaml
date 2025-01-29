@@ -44,15 +44,15 @@
                                  Margin="8 0">HealthLink BC</HyperlinkButton>
             </NavigationView.PaneCustomContent>
 
-            <!-- FooterMenuItems  NOT WORKING
+            <!-- FooterMenuItems NOT WORKING
             <NavigationView.FooterMenuItems>
-                <NavigationViewItem Content="Account" Tag="MVVM_play.Views.AboutPage">
+                <NavigationViewItem Content="Account" Tag="MVVM_play.Views.AccountPage">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="/Assets/icons8-user-48.png"
                                     ShowAsMonochrome="False" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="About" Tag="MVVM_play.Views.MountainPage">
+                <NavigationViewItem Content="About" Tag="MVVM_play.Views.AboutPage">
                     <NavigationViewItem.Icon>
                         <BitmapIcon UriSource="/Assets/About.png"
                                     ShowAsMonochrome="False" />
@@ -60,8 +60,7 @@
                 </NavigationViewItem>
             </NavigationView.FooterMenuItems>
             -->
-           
-         
+
             <!-- Content Frame -->
             <NavigationView.Content>
                 <Frame x:Name="ContentFrame" Margin="0,0,0,0" Padding="16" />
