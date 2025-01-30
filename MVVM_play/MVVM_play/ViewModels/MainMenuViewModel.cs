@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace MVVM_play.ViewModels;
 
-public partial class MainViewModel : ObservableObject
+public partial class MainMenuViewModel : ObservableObject
 {
     private ObservableCollection<MenuItemBase> _categories = null!;
     public ObservableCollection<MenuItemBase> Categories
@@ -21,7 +21,7 @@ public partial class MainViewModel : ObservableObject
         set => SetProperty(ref _footerMenuItems, value);
     }
 
-    public MainViewModel()
+    public MainMenuViewModel()
     {
         Categories = new ObservableCollection<MenuItemBase>
         {
@@ -30,7 +30,9 @@ public partial class MainViewModel : ObservableObject
             new Separator(),
             new MenuItem { Name = "MAR", Glyph = Symbol.Library, Tooltip = "This is category 3", Tag = "MVVM_play.Views.AboutPage" },
             new MenuItem { Name = "MAR Summary", Glyph = Symbol.Mail, Tooltip = "This is category 4", Tag = "MVVM_play.Views.AboutPage" },
-            new MenuItem { Name = "Layout Test", Glyph = Symbol.Mail, Tooltip = "Test layout", Tag = "MVVM_play.Views.LayoutTestPage" }
+            new MenuItem { Name = "Layout Test", Glyph = Symbol.Mail, Tooltip = "Test layout", Tag = "MVVM_play.Views.LayoutTestPage" },
+            new MenuItem { Name = "WebView2 Test", Glyph = Symbol.Mail, Tooltip = "Test WebView2", Tag = "MVVM_play.Views.WebView2TestPage" }
+
         };
 
         FooterMenuItems = new ObservableCollection<MenuItemBase>

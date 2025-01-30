@@ -14,7 +14,7 @@
     <Grid x:Name="RootGrid">
         <!-- Resources defined in a valid parent container -->
         <Grid.Resources>
-            <vm:MainViewModel x:Key="MainViewModelInstance" />
+            <vm:MainMenuViewModel x:Key="MainMenuViewModelInstance" />
 
             <!-- Template Selector -->
             <local:MenuItemTemplateSelector x:Key="selector">
@@ -35,7 +35,7 @@
 
         <!-- NavigationView -->
         <NavigationView x:Name="MainNavigationView"
-                        DataContext="{StaticResource MainViewModelInstance}"
+                        DataContext="{StaticResource MainMenuViewModelInstance}"
                         MenuItemTemplateSelector="{StaticResource selector}"
                         MenuItemsSource="{Binding Categories, Mode=OneWay}" 
                         FooterMenuItemsSource="{Binding FooterMenuItems, Mode=OneWay}"

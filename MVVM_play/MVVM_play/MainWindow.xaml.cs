@@ -8,14 +8,14 @@ namespace MVVM_play;
 /// </summary>
 public sealed partial class MainWindow : Window
 {
-    public MainViewModel ViewModel { get; }
+    public MainMenuViewModel ViewModel { get; }
 
     public MainWindow()
     {
         this.InitializeComponent();
 
         // Initialize ViewModel
-        ViewModel = new MainViewModel();
+        ViewModel = new MainMenuViewModel();
 
         // Set DataContext on the root element (e.g., the Grid in XAML)
         RootGrid.DataContext = ViewModel;
