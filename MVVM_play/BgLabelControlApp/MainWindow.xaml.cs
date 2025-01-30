@@ -32,5 +32,10 @@ namespace BgLabelControlApp
         {
             myButton.Content = "Clicked";
         }
+
+        private void FancyButton_ContextCanceled(UIElement sender, RoutedEventArgs args)
+        {
+
+        }
     }
 }

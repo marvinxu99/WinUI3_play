@@ -1,17 +1,66 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:BgLabelControlApp">
+    xmlns:controls="using:BgLabelControlApp.Controls">
 
-    <Style TargetType="local:BgLabelControl" >
+    <Style TargetType="controls:BgLabelControl" >
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:BgLabelControl">
-                    <Border
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
-                    </Border>
+                <ControlTemplate TargetType="controls:BgLabelControl">
+                    <Grid Width="100" Height="100" Background="{TemplateBinding Background}">
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{TemplateBinding Label}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="controls:FancyButton" >
+        <Setter Property="Background" Value="LightGray"/>
+        <Setter Property="BorderBrush" Value="DarkGray"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:FancyButton">
+                    <Grid x:Name="RootGrid">
+                        <Border
+                            x:Name="BorderElement"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <!-- Hover Effect -->
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="BorderElement.Background" Value="LightBlue"/>
+                                        <Setter Target="BorderElement.BorderBrush" Value="Blue"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <!-- Pressed Effect -->
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Setters>
+                                        <Setter Target="BorderElement.Background" Value="DarkBlue"/>
+                                        <Setter Target="BorderElement.BorderBrush" Value="Navy"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <!-- Disabled State -->
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="BorderElement.Background" Value="Gray"/>
+                                        <Setter Target="BorderElement.BorderBrush" Value="DarkGray"/>
+                                        <Setter Target="BorderElement.Opacity" Value="0.5"/>
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
