@@ -29,7 +29,8 @@ public partial class MainViewModel : ObservableObject
             new MenuItem { Name = "Orders", Glyph = Symbol.Keyboard, Tooltip = "This is category 2", Tag = "MVVM_play.Views.MountainPage" },
             new Separator(),
             new MenuItem { Name = "MAR", Glyph = Symbol.Library, Tooltip = "This is category 3", Tag = "MVVM_play.Views.AboutPage" },
-            new MenuItem { Name = "MAR Summary", Glyph = Symbol.Mail, Tooltip = "This is category 4", Tag = "MVVM_play.Views.AboutPage" }
+            new MenuItem { Name = "MAR Summary", Glyph = Symbol.Mail, Tooltip = "This is category 4", Tag = "MVVM_play.Views.AboutPage" },
+            new MenuItem { Name = "Layout Test", Glyph = Symbol.Mail, Tooltip = "Test layout", Tag = "MVVM_play.Views.LayoutTestPage" }
         };
 
         FooterMenuItems = new ObservableCollection<MenuItemBase>

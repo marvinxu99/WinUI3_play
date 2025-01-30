@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BgLabelControlApp (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "BgLabelControlApp (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
