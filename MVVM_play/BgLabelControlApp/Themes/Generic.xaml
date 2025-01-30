@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:BgLabelControlApp.Controls">
 
+    <!-- BgLabelControl Style -->
     <Style TargetType="controls:BgLabelControl" >
         <Setter Property="Template">
             <Setter.Value>
@@ -15,6 +16,7 @@
         </Setter>
     </Style>
 
+    <!-- FancyButton Style -->
     <Style TargetType="controls:FancyButton" >
         <Setter Property="Background" Value="LightGray"/>
         <Setter Property="BorderBrush" Value="DarkGray"/>
