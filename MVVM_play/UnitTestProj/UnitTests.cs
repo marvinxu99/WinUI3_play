@@ -20,5 +20,12 @@ namespace UnitTestProj
             var grid = new Grid();
             Assert.AreEqual(0, grid.MinWidth);
         }
+
+        [UITestMethod]
+        public void TestUserControl1()
+        {
+            WinUIClassLibrary1.UserControl1 userControl1 = new();
+            Assert.AreEqual(7, userControl1.GetSeven());
+        }
     }
 }

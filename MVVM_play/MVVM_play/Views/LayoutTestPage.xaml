@@ -6,11 +6,14 @@
     xmlns:local="using:MVVM_play.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:usercontrols="using:MVVM_play.Controls"
     mc:Ignorable="d"
     Background="Transparent">
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -90,7 +93,11 @@
                     <TextBlock x:Name="cdTextBlock" TextWrapping="Wrap" />
                 </ScrollViewer>
             </ContentDialog>
+            
+        </StackPanel>
 
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="5">
+            <usercontrols:UserControl1 LabelText="Hello from Library!" />
         </StackPanel>
 
     </Grid>

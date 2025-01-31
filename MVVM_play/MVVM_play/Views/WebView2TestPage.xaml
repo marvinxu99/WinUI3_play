@@ -15,6 +15,9 @@
             <controls:WebView2 x:Name="MyWebView"
                            Source="https://www.microsoft.com" 
                            Width="800" Height="600"/>
+
+            
         </StackPanel>
+
     </Grid>
 </Page>

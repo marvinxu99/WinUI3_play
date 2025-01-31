@@ -20,10 +20,11 @@ public sealed class BgLabelControl : Control
     }
 
     DependencyProperty LabelProperty = DependencyProperty.Register(
-    nameof(Label),
-    typeof(string),
-    typeof(BgLabelControl),
-    new PropertyMetadata(default(string), new PropertyChangedCallback(OnLabelChanged)));
+        nameof(Label),
+        typeof(string),
+        typeof(BgLabelControl),
+        new PropertyMetadata(default(string),
+        new PropertyChangedCallback(OnLabelChanged)));
 
     public bool HasLabelValue { get; set; }
 
