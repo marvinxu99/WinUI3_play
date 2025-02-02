@@ -96,7 +96,7 @@
             
         </StackPanel>
 
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="5">
+        <StackPanel HorizontalAlignment="left" VerticalAlignment="Center" Grid.Row="5">
             <usercontrols:UserControl1 LabelText="Hello from Library!" />
         </StackPanel>
 

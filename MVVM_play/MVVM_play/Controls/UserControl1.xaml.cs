@@ -36,7 +36,8 @@ public sealed partial class UserControl1 : UserControl
 
     private void OnButtonClick(object sender, RoutedEventArgs e)
     {
-        MyLabel.Text = "Button Clicked!";
+        //MyLabel.Text = "Button Clicked!";
+        LabelText = "Button Clicked!";
     }
 
     public int GetSeven()
