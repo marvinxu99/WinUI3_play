@@ -450,3 +450,6 @@ TEST-results.xml
 **/xUnitResults/
 
 
+/MVVM_play/MVVM_play/app.db
+/MVVM_play/MVVM_play/app.db-shm
+/MVVM_play/MVVM_play/app.db-wal
