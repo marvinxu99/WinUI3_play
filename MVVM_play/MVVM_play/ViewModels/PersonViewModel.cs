@@ -1,11 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using MVVM_play.Models;
+using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace MVVM_play.ViewModels;
 
 //class PersonViewModel : INotifyPropertyChanged   // When not using MVVM package
-class PersonViewModel : ObservableObject
+internal partial class PersonViewModel : ObservableObject
 {
     private Person _selectedPerson = null!;
 
@@ -16,6 +21,12 @@ class PersonViewModel : ObservableObject
         get => _selectedPerson;
         set => SetProperty(ref _selectedPerson, value);
     }
+
+    public Action<Person>? ShowDetailsRequested { get; set; }  // UI event (Handled in View)
+
+    public RelayCommand EditPersonCommand { get; }
+    public RelayCommand DeletePersonCommand { get; }
+    public RelayCommand ViewDetailsCommand { get; }
 
     public PersonViewModel()
     {
@@ -36,13 +47,56 @@ class PersonViewModel : ObservableObject
         };
 
         SelectedPerson = People[0];  // Default selection
+
+        EditPersonCommand = new RelayCommand(EditPerson, CanEdit);
+        DeletePersonCommand = new RelayCommand(DeletePerson, CanDelete);
+        ViewDetailsCommand = new RelayCommand(ViewDetails, CanViewDetails);
     }
 
-    // BELOW CODE needed when not using MVVM
-    //public event PropertyChangedEventHandler? PropertyChanged;
-    //protected void OnPropertyChanged(string propertyName)
-    //{
-    //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    //}
+
+    public void MyDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        Debug.WriteLine("Selected Changed");
+    }
+
+    public void MyDataGrid_KeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        Debug.WriteLine("key pressed!");
+    }
+    public void HandleKeyDown(object sender, KeyRoutedEventArgs e)
+    {
+        if (e.Key == Windows.System.VirtualKey.Enter)
+        {
+            // Handle Enter key
+            Debug.WriteLine("Enter key pressed!");
+        }
+    }
+
+    private void EditPerson()
+    {
+        Debug.WriteLine($"Editing {SelectedPerson?.Name}");
+    }
+
+    private void DeletePerson()
+    {
+        if (SelectedPerson != null)
+        {
+            People.Remove(SelectedPerson);
+            Debug.WriteLine($"Deleted {SelectedPerson.Name}");
+        }
+    }
+
+    private void ViewDetails()
+    {
+        if (SelectedPerson != null)
+        {
+            ShowDetailsRequested?.Invoke(SelectedPerson); // Notify View to show the dialog
+        }
+
+    }
+
+    private bool CanEdit() => SelectedPerson != null;
+    private bool CanDelete() => SelectedPerson != null;
+    private bool CanViewDetails() => SelectedPerson != null;
 
 }
