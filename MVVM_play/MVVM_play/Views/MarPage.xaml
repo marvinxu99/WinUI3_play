@@ -6,13 +6,62 @@
     xmlns:local="using:MVVM_play.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d"
     Background="Transparent">
 
-    <Grid>
-        <TextBlock>
-            <Run>Mar Page.</Run>
-    
-        </TextBlock>
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Button Content="Refresh"
+            Command="{x:Bind ViewModel.RefreshMarCommand}"
+            HorizontalAlignment="Left"
+            Margin="10"
+            Grid.Row="3" />
+
+        <!-- DataGrid with Context Menu -->
+        <controls:DataGrid 
+            x:Name="MarGrid" 
+            ItemsSource="{Binding MarRows}"
+            AutoGenerateColumns="False" 
+            IsReadOnly="False"
+            TabNavigation="Local"
+            Margin="10"
+            HeadersVisibility="Column"
+            GridLinesVisibility="All" 
+            AreRowDetailsFrozen="True"
+            SelectedItem="{x:Bind ViewModel.SelectedMarRow, Mode=TwoWay}"
+            SelectionChanged="{x:Bind ViewModel.MarGrid_SelectionChanged}"
+            KeyDown="{x:Bind ViewModel.MarGrid_KeyDown}"
+            MaxHeight="360"
+            Grid.Row="4">
+            <controls:DataGrid.Columns>
+
+                <controls:DataGridTextColumn Header="Order" Binding="{Binding OrderName}" />
+                <controls:DataGridTextColumn Header="Order Type" Binding="{Binding OrderType}" />
+
+            </controls:DataGrid.Columns>
+
+            <!-- Context Menu
+            <controls:DataGrid.ContextFlyout>
+                <MenuFlyout>
+                    <MenuFlyoutItem Text="Edit" Command="{x:Bind ViewModel.EditPersonCommand}" />
+                    <MenuFlyoutItem Text="Delete" Command="{x:Bind ViewModel.DeletePersonCommand}" />
+                    <MenuFlyoutItem Text="Add" Command="{x:Bind ViewModel.AddPersonCommand}" />
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem x:Name="DetailsMenuItem" Text="Details..." Command="{x:Bind ViewModel.ViewDetailsCommand}" />
+                </MenuFlyout>
+            </controls:DataGrid.ContextFlyout>
+            -->
+
+        </controls:DataGrid>
+
     </Grid>
+
 </Page>
