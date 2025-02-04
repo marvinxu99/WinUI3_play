@@ -33,8 +33,36 @@
             </local:MenuItemTemplateSelector>
         </Grid.Resources>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Menu Bar -->
+            <RowDefinition Height="*"/>
+            <!-- NavigationView -->
+        </Grid.RowDefinitions>
+
+        <!-- Top MenuBar -->
+        <MenuBar Grid.Row="0">
+            <MenuBarItem Title="File">
+                <MenuFlyoutItem Text="New" Command="{x:Bind ViewModel.NewCommand}" />
+                <MenuFlyoutItem Text="Open" Command="{x:Bind ViewModel.OpenCommand}" />
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem Text="Exit" Command="{x:Bind ViewModel.ExitCommand}" />
+            </MenuBarItem>
+
+            <MenuBarItem Title="Edit">
+                <MenuFlyoutItem Text="Undo" Command="{x:Bind ViewModel.UndoCommand}" />
+                <MenuFlyoutItem Text="Redo" Command="{x:Bind ViewModel.RedoCommand}" />
+            </MenuBarItem>
+
+            <MenuBarItem Title="Help">
+                <MenuFlyoutItem Text="About" Command="{x:Bind ViewModel.AboutCommand}" />
+            </MenuBarItem>
+        </MenuBar>
+
         <!-- NavigationView -->
         <NavigationView x:Name="MainNavigationView"
+                        Grid.Row="1"
+                        OpenPaneLength="180"
                         DataContext="{StaticResource MainMenuViewModelInstance}"
                         MenuItemTemplateSelector="{StaticResource selector}"
                         MenuItemsSource="{Binding Categories, Mode=OneWay}" 

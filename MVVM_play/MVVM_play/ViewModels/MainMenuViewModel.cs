@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
 using MVVM_play.Common;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace MVVM_play.ViewModels;
 
@@ -20,6 +22,14 @@ public partial class MainMenuViewModel : ObservableObject
         get => _footerMenuItems;
         set => SetProperty(ref _footerMenuItems, value);
     }
+
+    public RelayCommand NewCommand { get; }
+    public RelayCommand OpenCommand { get; }
+    public RelayCommand ExitCommand { get; }
+    public RelayCommand UndoCommand { get; }
+    public RelayCommand RedoCommand { get; }
+    public RelayCommand AboutCommand { get; }
+
 
     public MainMenuViewModel()
     {
@@ -41,5 +51,12 @@ public partial class MainMenuViewModel : ObservableObject
             new MenuItem { Name = "Account", Glyph = Symbol.Contact, Tooltip = "Account Page", Tag = "MVVM_play.Views.AccountPage" },
             new MenuItem { Name = "About", Glyph = Symbol.Help, Tooltip = "About Page", Tag = "MVVM_play.Views.AboutPage" }
         };
+
+        NewCommand = new RelayCommand(() => Debug.WriteLine("New clicked"));
+        OpenCommand = new RelayCommand(() => Debug.WriteLine("Open clicked"));
+        ExitCommand = new RelayCommand(() => Debug.WriteLine("Exit clicked"));
+        UndoCommand = new RelayCommand(() => Debug.WriteLine("Undo clicked"));
+        RedoCommand = new RelayCommand(() => Debug.WriteLine("Redo clicked"));
+        AboutCommand = new RelayCommand(() => Debug.WriteLine("About clicked"));
     }
 }

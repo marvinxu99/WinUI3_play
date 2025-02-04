@@ -38,13 +38,13 @@ internal partial class PersonViewModel : ObservableObject
             new("Alice", 25),
             new("Bob", 30),
             new("Charlie", 35),
-            new Person("David", 40),
-            new Person("Eve", 45),
-            new Person("Frank", 50),
-            new Person("Grace", 55),
-            new Person("Hank", 60),
-            new Person("Ivy", 65),
-            new Person("Jack", 70)
+            new("David", 40),
+            new("Eve", 45),
+            new("Frank", 50),
+            new("Grace", 55),
+            new("Hank", 60),
+            new("Ivy", 65),
+            new("Jack", 70)
         };
 
         SelectedPerson = People[0];  // Default selection
