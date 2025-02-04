@@ -19,6 +19,7 @@
     <None Remove="Views\LayoutTestPage.xaml" />
     <None Remove="Views\MarPage.xaml" />
     <None Remove="Views\MarSummaryPage.xaml" />
+    <None Remove="Views\PersonSelectPage.xaml" />
     <None Remove="WebView2TestPage.xaml" />
   </ItemGroup>
 
@@ -67,6 +68,11 @@
     <Reference Include="WinUIClassLibrary1">
       <HintPath>..\WinUIClassLibrary1\bin\Debug\net9.0-windows10.0.19041.0\WinUIClassLibrary1.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\PersonSelectPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\MarSummaryPage.xaml">

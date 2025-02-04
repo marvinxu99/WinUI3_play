@@ -31,7 +31,8 @@ public partial class MainMenuViewModel : ObservableObject
             new MenuItem { Name = "MAR", Glyph = Symbol.Library, Tooltip = "This is category 3", Tag = "MVVM_play.Views.MarPage" },
             new MenuItem { Name = "MAR Summary", Glyph = Symbol.Mail, Tooltip = "This is category 4", Tag = "MVVM_play.Views.MarSummaryPage" },
             new MenuItem { Name = "Layout Test", Glyph = Symbol.Mail, Tooltip = "Test layout", Tag = "MVVM_play.Views.LayoutTestPage" },
-            new MenuItem { Name = "WebView2 Test", Glyph = Symbol.Mail, Tooltip = "Test WebView2", Tag = "MVVM_play.Views.WebView2TestPage" }
+            new MenuItem { Name = "WebView2 Test", Glyph = Symbol.Mail, Tooltip = "Test WebView2", Tag = "MVVM_play.Views.WebView2TestPage" },
+             new MenuItem { Name = "Person Select", Glyph = Symbol.Mail, Tooltip = "Select a person", Tag = "MVVM_play.Views.PersonSelectPage" }
 
         };
 
