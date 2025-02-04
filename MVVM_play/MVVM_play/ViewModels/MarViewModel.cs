@@ -77,6 +77,7 @@ internal partial class MarViewModel : ObservableObject
         };
 
         RefreshMarCommand = new RelayCommand(RefreshMar);
+
     }
 
     private void RefreshMar()

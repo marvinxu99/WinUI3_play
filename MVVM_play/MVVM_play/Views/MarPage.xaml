@@ -48,7 +48,7 @@
 
             </controls:DataGrid.Columns>
 
-            <!-- Context Menu
+            <!-- Context Menu 
             <controls:DataGrid.ContextFlyout>
                 <MenuFlyout>
                     <MenuFlyoutItem Text="Edit" Command="{x:Bind ViewModel.EditPersonCommand}" />

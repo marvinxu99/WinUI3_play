@@ -62,7 +62,7 @@
         <!-- NavigationView -->
         <NavigationView x:Name="MainNavigationView"
                         Grid.Row="1"
-                        OpenPaneLength="180"
+                        OpenPaneLength="200"
                         DataContext="{StaticResource MainMenuViewModelInstance}"
                         MenuItemTemplateSelector="{StaticResource selector}"
                         MenuItemsSource="{Binding Categories, Mode=OneWay}" 
