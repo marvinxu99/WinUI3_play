@@ -16,13 +16,15 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         
         <!-- ListBox for People -->
         <TextBlock Text="Select a person:" Grid.Row="0" />
-        <ListBox ItemsSource="{x:Bind ViewModel.People}" 
+        <ListBox x:Name="MyListBox"
+                 ItemsSource="{x:Bind ViewModel.People}" 
                  DisplayMemberPath="Name"
-                 SelectedItem="{x:Bind ViewModel.SelectedPerson, Mode=TwoWay}" 
+                 SelectedItem="{x:Bind ViewModel.SelectedPerson,Mode=TwoWay}" 
                  Height="150" 
                  Grid.Row="1">
             
@@ -44,6 +46,12 @@
             <TextBlock Text="{Binding SelectedPerson.Age}" FontSize="18" Margin="10"/>
         </StackPanel>
 
+        <Button Content="Add Person"
+            Command="{x:Bind ViewModel.AddPersonCommand}"
+            HorizontalAlignment="Left"
+            Margin="10"
+            Grid.Row="3" />
+        
         <!-- DataGrid with Context Menu -->
         <controls:DataGrid 
             x:Name="MyDataGrid" 
@@ -55,9 +63,11 @@
             HeadersVisibility="Column"
             GridLinesVisibility="All" 
             AreRowDetailsFrozen="True"
+            SelectedItem="{x:Bind ViewModel.SelectedPerson, Mode=TwoWay}"
             SelectionChanged="{x:Bind ViewModel.MyDataGrid_SelectionChanged}"
             KeyDown="{x:Bind ViewModel.MyDataGrid_KeyDown}"
-            Grid.Row="3">
+            MaxHeight="360"
+            Grid.Row="4">
             <controls:DataGrid.Columns>
 
                 <controls:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
@@ -70,6 +80,7 @@
                 <MenuFlyout>
                     <MenuFlyoutItem Text="Edit" Command="{x:Bind ViewModel.EditPersonCommand}" />
                     <MenuFlyoutItem Text="Delete" Command="{x:Bind ViewModel.DeletePersonCommand}" />
+                    <MenuFlyoutItem Text="Add" Command="{x:Bind ViewModel.AddPersonCommand}" />
                     <MenuFlyoutSeparator />
                     <MenuFlyoutItem x:Name="DetailsMenuItem" Text="Details..." Command="{x:Bind ViewModel.ViewDetailsCommand}" />
                 </MenuFlyout>

@@ -23,10 +23,12 @@ internal partial class PersonViewModel : ObservableObject
     }
 
     public Action<Person>? ShowDetailsRequested { get; set; }  // UI event (Handled in View)
+    public Action? AddPersonRequested { get; set; }
 
     public RelayCommand EditPersonCommand { get; }
     public RelayCommand DeletePersonCommand { get; }
     public RelayCommand ViewDetailsCommand { get; }
+    public RelayCommand AddPersonCommand { get; }
 
     public PersonViewModel()
     {
@@ -43,7 +45,6 @@ internal partial class PersonViewModel : ObservableObject
             new Person("Hank", 60),
             new Person("Ivy", 65),
             new Person("Jack", 70)
-
         };
 
         SelectedPerson = People[0];  // Default selection
@@ -51,6 +52,7 @@ internal partial class PersonViewModel : ObservableObject
         EditPersonCommand = new RelayCommand(EditPerson, CanEdit);
         DeletePersonCommand = new RelayCommand(DeletePerson, CanDelete);
         ViewDetailsCommand = new RelayCommand(ViewDetails, CanViewDetails);
+        AddPersonCommand = new RelayCommand(() => AddPersonRequested?.Invoke()); ;
     }
 
 
@@ -84,6 +86,14 @@ internal partial class PersonViewModel : ObservableObject
             People.Remove(SelectedPerson);
             Debug.WriteLine($"Deleted {SelectedPerson.Name}");
         }
+    }
+
+    private void AddPerson()
+    {
+        var newPerson = new Person("New Person", 20);  // Create a new person
+        People.Add(newPerson);
+        SelectedPerson = newPerson;  // Select the newly added person
+        Debug.WriteLine($"Added: {newPerson.Name}");
     }
 
     private void ViewDetails()
