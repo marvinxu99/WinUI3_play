@@ -9,12 +9,12 @@ internal class UserProfile
     [Key]
     public int Id { get; set; }  // Primary Key
 
-    //Foreign Key Property
+    //Foreign Key Property 
     public int UserId { get; set; }
 
-    //Navigation Property
+    //Navigation Property (One-to-One)
     [ForeignKey("UserId")]
-    public required User User { get; set; }
+    public User? User { get; set; }
 
     public required string Gender { get; set; }
 

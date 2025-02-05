@@ -77,11 +77,6 @@
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="WinUIClassLibrary1">
-      <HintPath>..\WinUIClassLibrary1\bin\Debug\net9.0-windows10.0.19041.0\WinUIClassLibrary1.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Page Update="Views\DataGridMergedDataPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

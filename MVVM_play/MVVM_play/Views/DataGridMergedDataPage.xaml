@@ -3,13 +3,83 @@
     x:Class="MVVM_play.Views.DataGridMergedDataPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:MVVM_play.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:MVVM_play.Views"
+    xmlns:vm="using:MVVM_play.ViewModels"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="Transparent">
 
-    <Grid>
+    <!-- MOVED TO Code-behind file
+    <Page.DataContext>
+        <vm:UserMergedViewModel/>
+    </Page.DataContext>
+    -->
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <controls:DataGrid x:Name="UsersDataGrid"
+                           Grid.Row="0"
+                           ItemsSource="{Binding UsersWithProfiles}"
+                           SelectedItem="{x:Bind ViewModel.SelectedUser, Mode=TwoWay}"
+                           SelectionChanged="{x:Bind ViewModel.DataGridSelectionChanged}"
+                           AutoGenerateColumns="False"
+                           SelectionMode="Single"
+                           HeadersVisibility="Column"
+                           IsReadOnly="False"
+                           GridLinesVisibility="All">
+
+            <controls:DataGrid.Columns>
+                <!-- User Table Columns -->
+                <controls:DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="150"/>
+                <controls:DataGridTextColumn Header="Age" Binding="{Binding Age}" Width="80"/>
+                <controls:DataGridTextColumn Header="City" Binding="{Binding City}" Width="150"/>
+
+                <!-- UserProfile Table Columns -->
+                <controls:DataGridTextColumn Header="UserProfileId" Binding="{Binding UserProfileId}" Width="80"/>
+                <controls:DataGridTextColumn Header="Gender" Binding="{Binding Gender}" Width="80"/>
+                <controls:DataGridTextColumn Header="Primary Address" Binding="{Binding PrimaryAddress}" Width="200"/>
+                <controls:DataGridTextColumn Header="Secondary Address" Binding="{Binding SecondaryAddress}" Width="200"/>
+                <controls:DataGridTextColumn Header="Created On" Binding="{Binding CreatedDateTime}" Width="120"/>
+
+                <!-- Optional: Avatar Column -->
+                <controls:DataGridTemplateColumn Header="Avatar" Width="100">
+                    <controls:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding AvatarUrl}" Width="50" Height="50"/>
+                        </DataTemplate>
+                    </controls:DataGridTemplateColumn.CellTemplate>
+                </controls:DataGridTemplateColumn>
+
+            </controls:DataGrid.Columns>
+        </controls:DataGrid>
+
+        <!-- Buttons -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" Grid.Row="1">
+            <Button Content="Add Profile" 
+                Command="{x:Bind ViewModel.AddUserProfileCommand}" 
+                Margin="10" />
+
+            <Button Content="Update Profile" 
+                Command="{x:Bind ViewModel.UpdateUserProfileCommand}" 
+                Margin="10" />  
+        </StackPanel>
+
+        <!-- Show Selected Person Details -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="2">
+            <TextBlock Text="Selected User:" FontSize="18" Margin="10" />
+            <TextBlock Text="{Binding SelectedUser.Name}" FontSize="18" Margin="10"/>
+            <TextBlock Text="UserProfileID:" FontSize="18" Margin="10" />
+            <TextBlock Text="{Binding SelectedUser.UserProfileId}" FontSize="18" Margin="10"/>
+            <TextBlock Text="UserID:" FontSize="18" Margin="10" />
+            <TextBlock Text="{Binding SelectedUser.Id}" FontSize="18" Margin="10"/>
+        </StackPanel>
 
     </Grid>
 </Page>

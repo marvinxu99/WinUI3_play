@@ -33,20 +33,19 @@ internal partial class DatabaseContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // Define Foreign Key Relationship
-        modelBuilder.Entity<UserProfile>()
-            .HasOne(up => up.User)  // One UserProfile has one User
-            .WithOne()  // One User can have only UserProfile
-            .HasForeignKey<UserProfile>(up => up.UserId)  // Foreign Key
-            .OnDelete(DeleteBehavior.Cascade);  // Delete UserProfile if User is deleted
+        // Define One-to-One Relationship: User → UserProfile
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.UserProfile)  // One User has One UserProfile
+            .WithOne(up => up.User)  // One UserProfile belongs to One User
+            .HasForeignKey<UserProfile>(up => up.UserId)  // UserId is the FK
+            .OnDelete(DeleteBehavior.Cascade);  // Delete Profile when User is deleted
 
         // Define Foreign Key Relationship
         modelBuilder.Entity<UserProfileHx>()
             .HasOne(up => up.User)  // One UserProfile has one User
             .WithMany()  // One User can have multiple UserProfiles
             .HasForeignKey(up => up.UserId)  // Foreign Key
-            .OnDelete(DeleteBehavior.Cascade);  // Delete UserProfile if User is deleted
-
+            .OnDelete(DeleteBehavior.Cascade);  // Delete UserProfile if User is delete
 
     }
 

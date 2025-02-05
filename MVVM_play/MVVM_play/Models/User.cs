@@ -6,4 +6,7 @@ internal class User
     public required string Name { get; set; }
     public int Age { get; set; }
     public string? City { get; set; }
+
+    // Add Navigation Property
+    public UserProfile? UserProfile { get; set; }
 }
