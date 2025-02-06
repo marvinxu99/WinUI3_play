@@ -44,11 +44,11 @@
                 <controls:DataGridTextColumn Header="City" Binding="{Binding City}" Width="150"/>
 
                 <!-- UserProfile Table Columns -->
-                <controls:DataGridTextColumn Header="UserProfileId" Binding="{Binding UserProfileId}" Width="80"/>
+                <!-- <controls:DataGridTextColumn Header="UserProfileId" Binding="{Binding UserProfileId}" Width="80"/> -->
                 <controls:DataGridTextColumn Header="Gender" Binding="{Binding Gender}" Width="80"/>
-                <controls:DataGridTextColumn Header="Primary Address" Binding="{Binding PrimaryAddress}" Width="200"/>
-                <controls:DataGridTextColumn Header="Secondary Address" Binding="{Binding SecondaryAddress}" Width="200"/>
-                <controls:DataGridTextColumn Header="Created On" Binding="{Binding CreatedDateTime}" Width="120"/>
+                <controls:DataGridTextColumn Header="PrimaryAddress" Binding="{Binding PrimaryAddress}" Width="200"/>
+                <controls:DataGridTextColumn Header="SecondaryAddress" Binding="{Binding SecondaryAddress}" Width="200"/>
+                <controls:DataGridTextColumn Header="CreatedDateTime" Binding="{Binding CreatedDateTime}" Width="120"/>
 
                 <!-- Optional: Avatar Column -->
                 <controls:DataGridTemplateColumn Header="Avatar" Width="100">

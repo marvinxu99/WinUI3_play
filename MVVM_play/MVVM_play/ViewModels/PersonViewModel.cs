@@ -33,8 +33,7 @@ internal partial class PersonViewModel : ObservableObject
     public PersonViewModel()
     {
         // Sample data
-        People = new ObservableCollection<Person>
-        {
+        People = [
             new("Alice", 25),
             new("Bob", 30),
             new("Charlie", 35),
@@ -45,7 +44,7 @@ internal partial class PersonViewModel : ObservableObject
             new("Hank", 60),
             new("Ivy", 65),
             new("Jack", 70)
-        };
+        ];
 
         SelectedPerson = People[0];  // Default selection
 

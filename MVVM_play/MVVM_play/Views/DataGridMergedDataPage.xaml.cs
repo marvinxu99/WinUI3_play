@@ -1,5 +1,6 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml.Controls;
+using MVVM_play.Models;
 using MVVM_play.ViewModels;
 using System;
 
@@ -91,7 +92,7 @@ public sealed partial class DataGridMergedDataPage : Page
 
     private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
     {
-        if (e.Row.DataContext is UserWithProfile user)
+        if (e.Row.DataContext is UserWithProfile)
         {
             string? columnName = e.Column.Header.ToString();
             if (columnName != null)

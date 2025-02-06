@@ -13,48 +13,12 @@ using System.Threading.Tasks;
 
 namespace MVVM_play.ViewModels;
 
-internal class UserWithProfile
-{
-    public int Id { get; set; }  // User ID
-    public string Name { get; set; } = string.Empty;
-    public int Age { get; set; }
-    public string? City { get; set; }
-
-    // UserProfile fields
-    public int UserProfileId { get; set; }
-    public string Gender { get; set; } = string.Empty;
-    public string? PrimaryAddress { get; set; }
-    public string? SecondaryAddress { get; set; }
-    public string? AvatarUrl { get; set; }
-    public DateTime? CreatedDateTime { get; set; }
-
-    // Constructor to Map Data
-    public UserWithProfile(Models.User user, UserProfile? profile)
-    {
-        Id = user.Id;
-        Name = user.Name;
-        Age = user.Age;
-        City = user.City;
-
-        if (profile != null)
-        {
-            UserProfileId = profile.Id;
-            Gender = profile.Gender;
-            PrimaryAddress = profile.PrimaryAddress;
-            SecondaryAddress = profile.SecondaryAddress;
-            AvatarUrl = profile.AvatarUrl;
-            CreatedDateTime = profile.CreatedDateTime;
-        }
-
-    }
-
-}
 
 internal partial class UserMergedViewModel : ObservableObject
 {
     private readonly DatabaseContext _dbContext;
     private UserWithProfile? _selectedUser;
-    private Dictionary<int, Dictionary<string, object>> _modifiedCells = [];
+    private readonly Dictionary<int, Dictionary<string, object>> _modifiedCells = [];
 
     public UserWithProfile? SelectedUser
     {
@@ -180,12 +144,14 @@ internal partial class UserMergedViewModel : ObservableObject
 
     public void TrackCellChange(int userId, string columnName, object newValue)
     {
-        if (!_modifiedCells.ContainsKey(userId))
+        if (!_modifiedCells.TryGetValue(userId, out var cellChanges))
         {
-            _modifiedCells[userId] = new Dictionary<string, object>();
+            cellChanges = [];
+            _modifiedCells[userId] = cellChanges;
         }
 
-        _modifiedCells[userId][columnName] = newValue;
+        //_modifiedCells[userId][columnName] = newValue;
+        cellChanges[columnName] = newValue;
 
         // Notify SignCommand when changes are detected
         SignChangesCommand.NotifyCanExecuteChanged();
