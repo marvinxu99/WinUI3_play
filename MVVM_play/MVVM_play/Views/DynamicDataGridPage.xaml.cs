@@ -7,12 +7,12 @@ using System.Collections.Generic;
 
 namespace MVVM_play.Views;
 
-public class DynamicData : Dictionary<string, object>
+public partial class DynamicData : Dictionary<string, object>
 {
-    public object? this[string columnName]
+    public new object? this[string columnName]     // Defining a indexer
     {
         get => ContainsKey(columnName) ? base[columnName] : null;
-        set => base[columnName] = value;
+        set => base[columnName] = value ?? "";
     }
 }
 
@@ -30,7 +30,7 @@ public sealed partial class DynamicDataGridPage : Page
     private void LoadDynamicData()
     {
         // Define columns dynamically
-        List<string> columnNames = new() { "ID", "Name", "Age", "City" };
+        List<string> columnNames = ["ID", "Name", "Age", "City"];
 
         // Clear existing columns before adding new ones
         MyDataGrid1.Columns.Clear();
@@ -45,13 +45,12 @@ public sealed partial class DynamicDataGridPage : Page
         }
 
         // Create dynamic data rows
-        List<DynamicData> data = new()
-        {
+        List<DynamicData> data = [
             new DynamicData { ["ID"] = 1, ["Name"] = "Alice", ["Age"] = 25, ["City"] = "Vancouver" },
             new DynamicData { ["ID"] = 2, ["Name"] = "Bob", ["Age"] = 30, ["City"] = "Toronto" },
             new DynamicData { ["ID"] = 3, ["Name"] = "Charlie", ["Age"] = 35, ["City"] = "Calgary" },
             new DynamicData { ["ID"] = 4, ["Name"] = "Charlie", ["Age"] = 35, ["City"] = "Calgary" },
-        };
+        ];
 
         // Bind data to DataGrid
         MyDataGrid1.ItemsSource = data;

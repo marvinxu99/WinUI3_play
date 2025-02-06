@@ -46,14 +46,17 @@ public partial class MainMenuViewModel : ObservableObject
 
             new MenuItem { Name = "Layout Test", Glyph = Symbol.Mail, Tooltip = "Test layout", Tag = "MVVM_play.Views.LayoutTestPage" },
             new MenuItem { Name = "WebView2 Test", Glyph = Symbol.Mail, Tooltip = "Test WebView2", Tag = "MVVM_play.Views.WebView2TestPage" },
-             new MenuItem { Name = "Person Select", Glyph = Symbol.Mail, Tooltip = "Select a person", Tag = "MVVM_play.Views.PersonSelectPage" },
+            new MenuItem { Name = "Person Select", Glyph = Symbol.Mail, Tooltip = "Select a person", Tag = "MVVM_play.Views.PersonSelectPage" },
 
-              new Separator(),
+            new Separator(),
 
-             new MenuItem { Name = "Dynamic DataGrid", Glyph = Symbol.Mail, Tooltip = "Dynamic DataGrid", Tag = "MVVM_play.Views.DynamicDataGridPage" },
-             new MenuItem { Name = "Dynamic DataGrid2", Glyph = Symbol.Mail, Tooltip = "Dynamic DataGrid2", Tag = "MVVM_play.Views.DynamicDataGrid2Page" },
-             new MenuItem { Name = "DataGrid DB CRUD", Glyph = Symbol.Mail, Tooltip = "Datagrid with CRUD", Tag = "MVVM_play.Views.DataGridWithCrudPage" },
-             new MenuItem { Name = "DataGrid MergedData", Glyph = Symbol.Mail, Tooltip = "Datagrid with Merged Data", Tag = "MVVM_play.Views.DataGridMergedDataPage" },
+            new MenuItem { Name = "Dynamic DataGrid", Glyph = Symbol.Mail, Tooltip = "Dynamic DataGrid", Tag = "MVVM_play.Views.DynamicDataGridPage" },
+            new MenuItem { Name = "Dynamic DataGrid2", Glyph = Symbol.Mail, Tooltip = "Dynamic DataGrid2", Tag = "MVVM_play.Views.DynamicDataGrid2Page" },
+            new MenuItem { Name = "DataGrid DB CRUD", Glyph = Symbol.Mail, Tooltip = "Datagrid with CRUD", Tag = "MVVM_play.Views.DataGridWithCrudPage" },
+
+            new Separator(),
+
+            new MenuItem { Name = "DataGrid MergedData", Glyph = Symbol.Mail, Tooltip = "Datagrid with Merged Data", Tag = "MVVM_play.Views.DataGridMergedDataPage" },
 
         ];
 
