@@ -1,4 +1,6 @@
-﻿namespace MVVM_play.Models;
+﻿using System;
+
+namespace MVVM_play.Models;
 
 internal class User
 {
@@ -9,4 +11,7 @@ internal class User
 
     // Add Navigation Property
     public UserProfile? UserProfile { get; set; }
+    public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;  // Set only on INSERT
+    public DateTime UpdateDateTime { get; set; } = DateTime.UtcNow;   // Auto-update on changes
+
 }

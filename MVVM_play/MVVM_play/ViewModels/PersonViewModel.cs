@@ -87,13 +87,13 @@ internal partial class PersonViewModel : ObservableObject
         }
     }
 
-    private void AddPerson()
-    {
-        var newPerson = new Person("New Person", 20);  // Create a new person
-        People.Add(newPerson);
-        SelectedPerson = newPerson;  // Select the newly added person
-        Debug.WriteLine($"Added: {newPerson.Name}");
-    }
+    //private void AddPerson()
+    //{
+    //    var newPerson = new Person("New Person", 20);  // Create a new person
+    //    People.Add(newPerson);
+    //    SelectedPerson = newPerson;  // Select the newly added person
+    //    Debug.WriteLine($"Added: {newPerson.Name}");
+    //}
 
     private void ViewDetails()
     {

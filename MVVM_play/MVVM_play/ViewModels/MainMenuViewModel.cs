@@ -33,8 +33,7 @@ public partial class MainMenuViewModel : ObservableObject
 
     public MainMenuViewModel()
     {
-        Categories = new ObservableCollection<MenuItemBase>
-        {
+        Categories = [
             new MenuItem { Name = "Summary", Glyph = Symbol.Home, Tooltip = "This is category 1", Tag = "MVVM_play.Views.MountainPage" },
             new MenuItem { Name = "Orders", Glyph = Symbol.Keyboard, Tooltip = "This is category 2", Tag = "MVVM_play.Views.MountainPage" },
 
@@ -56,13 +55,12 @@ public partial class MainMenuViewModel : ObservableObject
              new MenuItem { Name = "DataGrid DB CRUD", Glyph = Symbol.Mail, Tooltip = "Datagrid with CRUD", Tag = "MVVM_play.Views.DataGridWithCrudPage" },
              new MenuItem { Name = "DataGrid MergedData", Glyph = Symbol.Mail, Tooltip = "Datagrid with Merged Data", Tag = "MVVM_play.Views.DataGridMergedDataPage" },
 
-        };
+        ];
 
-        FooterMenuItems = new ObservableCollection<MenuItemBase>
-        {
+        FooterMenuItems = [
             new MenuItem { Name = "Account", Glyph = Symbol.Contact, Tooltip = "Account Page", Tag = "MVVM_play.Views.AccountPage" },
-            new MenuItem { Name = "About", Glyph = Symbol.Help, Tooltip = "About Page", Tag = "MVVM_play.Views.AboutPage" }
-        };
+            new MenuItem { Name = "About", Glyph = Symbol.Help, Tooltip = "About Page", Tag = "MVVM_play.Views.AboutPage" },
+        ];
 
         NewCommand = new RelayCommand(() => Debug.WriteLine("New clicked"));
         OpenCommand = new RelayCommand(() => Debug.WriteLine("Open clicked"));

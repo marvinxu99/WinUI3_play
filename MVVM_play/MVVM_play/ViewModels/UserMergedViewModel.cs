@@ -18,7 +18,8 @@ internal partial class UserMergedViewModel : ObservableObject
 {
     private readonly DatabaseContext _dbContext;
     private UserWithProfile? _selectedUser;
-    private readonly Dictionary<int, Dictionary<string, object>> _modifiedCells = [];
+    private readonly Dictionary<int, Dictionary<string, object>> _modifiedUserCells = [];
+    private readonly Dictionary<int, Dictionary<string, object>> _modifiedProfileCells = [];
 
     public UserWithProfile? SelectedUser
     {
@@ -144,14 +145,28 @@ internal partial class UserMergedViewModel : ObservableObject
 
     public void TrackCellChange(int userId, string columnName, object newValue)
     {
-        if (!_modifiedCells.TryGetValue(userId, out var cellChanges))
+        if (IsUserColumn(columnName))
         {
-            cellChanges = [];
-            _modifiedCells[userId] = cellChanges;
-        }
+            if (!_modifiedUserCells.TryGetValue(userId, out var cellChanges))
+            {
+                cellChanges = [];
+                _modifiedUserCells[userId] = cellChanges;
+            }
 
-        //_modifiedCells[userId][columnName] = newValue;
-        cellChanges[columnName] = newValue;
+            //_modifiedCells[userId][columnName] = newValue;  TO AVOID DOUBLE LOOKUP
+            cellChanges[columnName] = newValue;
+        }
+        else if (IsUserProfileColumn(columnName))
+        {
+            if (!_modifiedProfileCells.TryGetValue(userId, out var cellChanges))
+            {
+                cellChanges = [];
+                _modifiedProfileCells[userId] = cellChanges;
+            }
+
+            //_modifiedCells[userId][columnName] = newValue;  TO AVOID DOUBLE LOOKUP
+            cellChanges[columnName] = newValue;
+        }
 
         // Notify SignCommand when changes are detected
         SignChangesCommand.NotifyCanExecuteChanged();
@@ -159,7 +174,8 @@ internal partial class UserMergedViewModel : ObservableObject
 
     public async Task SaveChangesAsync()
     {
-        foreach (var row in _modifiedCells)
+        // Update User table
+        foreach (var row in _modifiedUserCells)
         {
             int userId = row.Key;
             var user = await _dbContext.Users.FindAsync(userId);
@@ -189,8 +205,43 @@ internal partial class UserMergedViewModel : ObservableObject
             }
         }
 
+        // Update UserProfile table
+        foreach (var row in _modifiedProfileCells)
+        {
+            int userId = row.Key;
+            var profile = await _dbContext.UserProfiles.FirstOrDefaultAsync(up => up.UserId == userId);
+
+            if (profile != null)
+            {
+                foreach (var column in row.Value)
+                {
+                    string propertyName = column.Key;
+                    object newValue = column.Value;
+                    PropertyInfo? property = profile.GetType().GetProperty(propertyName);
+
+                    if (property != null)
+                    {
+                        try
+                        {
+                            // Convert newValue to the correct type before setting it
+                            object convertedValue = Convert.ChangeType(newValue, property.PropertyType);
+                            property.SetValue(profile, convertedValue);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Error setting property '{propertyName}': {ex.Message}");
+                        }
+                    }
+                }
+            }
+        }
+
+        // Save changes to database
         await _dbContext.SaveChangesAsync();
-        _modifiedCells.Clear();
+        _modifiedUserCells.Clear();
+        _modifiedProfileCells.Clear();
+
+        // Refresh UI after saving
         await LoadUsersWithProfilesAsync();
 
         // Notify the View to show the success message
@@ -205,6 +256,12 @@ internal partial class UserMergedViewModel : ObservableObject
 
     private bool CanSign()
     {
-        return _modifiedCells.Count > 0; // Enable Sign button only if there are changes
+        return _modifiedUserCells.Count > 0 || _modifiedProfileCells.Count > 0; // Enable Sign button only if there are changes
     }
+
+    private static readonly HashSet<string> UserColumns = ["Name", "Age", "City"];
+    private static readonly HashSet<string> UserProfileColumns = ["Gender", "PrimaryAddress", "SecondaryAddress", "AvatarUrl"];
+
+    private static bool IsUserColumn(string columnName) => UserColumns.Contains(columnName);
+    private static bool IsUserProfileColumn(string columnName) => UserProfileColumns.Contains(columnName);
 }

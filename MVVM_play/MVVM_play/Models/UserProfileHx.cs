@@ -25,4 +25,5 @@ internal class UserProfileHx
     public string? AvatarUrl { get; set; }
 
     public DateTime CreatedDateTime { get; set; } = DateTime.UtcNow;  // Track history time
+    public DateTime UpdateDateTime { get; set; }
 }

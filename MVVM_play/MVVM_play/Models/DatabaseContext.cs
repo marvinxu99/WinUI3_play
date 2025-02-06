@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MVVM_play.Models;
@@ -187,6 +188,36 @@ internal partial class DatabaseContext : DbContext
         {
             await transaction.RollbackAsync(); // Rollback if any error occurs
             throw new Exception("Transaction failed: " + ex.Message);
+        }
+    }
+
+    public override int SaveChanges()
+    {
+        ApplyTimestamps();  // Auto-update timestamps before saving
+        return base.SaveChanges();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        ApplyTimestamps();  // Auto-update timestamps before saving
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void ApplyTimestamps()
+    {
+        var entries = ChangeTracker.Entries<User>();
+
+        foreach (var entry in entries)
+        {
+            if (entry.State == EntityState.Added)   // New row → Set CreatedDateTime
+            {
+                entry.Property(u => u.CreatedDateTime).CurrentValue = DateTime.UtcNow;
+                entry.Property(u => u.UpdateDateTime).CurrentValue = DateTime.UtcNow;
+            }
+            else if (entry.State == EntityState.Modified) // Update row → Update UpdateDateTime
+            {
+                entry.Property(u => u.UpdateDateTime).CurrentValue = DateTime.UtcNow;
+            }
         }
     }
 }
