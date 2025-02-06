@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml.Controls;
 using MVVM_play.Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace MVVM_play.ViewModels;
@@ -51,8 +53,9 @@ internal class UserWithProfile
 internal partial class UserMergedViewModel : ObservableObject
 {
     private readonly DatabaseContext _dbContext;
-
     private UserWithProfile? _selectedUser;
+    private Dictionary<int, Dictionary<string, object>> _modifiedCells = [];
+
     public UserWithProfile? SelectedUser
     {
         get => _selectedUser;
@@ -63,6 +66,7 @@ internal partial class UserMergedViewModel : ObservableObject
             // Notify commands to re-evaluate CanExecute()
             AddUserProfileCommand?.NotifyCanExecuteChanged();
             UpdateUserProfileCommand?.NotifyCanExecuteChanged();
+            SignChangesCommand?.NotifyCanExecuteChanged();
         }
     }
 
@@ -71,9 +75,12 @@ internal partial class UserMergedViewModel : ObservableObject
     // Define events to request dialogs from the View
     public event Action<UserWithProfile>? RequestAddProfileDialog;
     public event Action<UserWithProfile>? RequestUpdateProfileDialog;
+    public event Action? RequestShowSuccessDialog;  // Event for notifying View to show success dialog
+
 
     public IRelayCommand AddUserProfileCommand { get; }
     public IRelayCommand UpdateUserProfileCommand { get; }
+    public IRelayCommand SignChangesCommand { get; }
 
     public UserMergedViewModel()
     {
@@ -84,6 +91,7 @@ internal partial class UserMergedViewModel : ObservableObject
         // Initialize Commands
         AddUserProfileCommand = new RelayCommand(() => RequestAddProfileDialog?.Invoke(SelectedUser!), CanAdd);
         UpdateUserProfileCommand = new RelayCommand(() => RequestUpdateProfileDialog?.Invoke(SelectedUser!), CanEdit);
+        SignChangesCommand = new RelayCommand(SignChanges, CanSign);
     }
 
     public async Task LoadUsersWithProfilesAsync()
@@ -118,6 +126,9 @@ internal partial class UserMergedViewModel : ObservableObject
         {
             SelectedUser = UsersWithProfiles.FirstOrDefault();
         }
+
+        // Notify SignChangesCommand if it can execute
+        SignChangesCommand.NotifyCanExecuteChanged();
     }
 
     // Receive user input from View and save new profile
@@ -164,5 +175,70 @@ internal partial class UserMergedViewModel : ObservableObject
         // Notify commands to update based on new selection
         AddUserProfileCommand.NotifyCanExecuteChanged();
         UpdateUserProfileCommand.NotifyCanExecuteChanged();
+        SignChangesCommand.NotifyCanExecuteChanged();
+    }
+
+    public void TrackCellChange(int userId, string columnName, object newValue)
+    {
+        if (!_modifiedCells.ContainsKey(userId))
+        {
+            _modifiedCells[userId] = new Dictionary<string, object>();
+        }
+
+        _modifiedCells[userId][columnName] = newValue;
+
+        // Notify SignCommand when changes are detected
+        SignChangesCommand.NotifyCanExecuteChanged();
+    }
+
+    public async Task SaveChangesAsync()
+    {
+        foreach (var row in _modifiedCells)
+        {
+            int userId = row.Key;
+            var user = await _dbContext.Users.FindAsync(userId);
+
+            if (user != null)
+            {
+                foreach (var column in row.Value)
+                {
+                    string propertyName = column.Key;
+                    object newValue = column.Value;
+                    PropertyInfo? property = user.GetType().GetProperty(propertyName);
+
+                    if (property != null)
+                    {
+                        try
+                        {
+                            // Convert newValue to the correct type before setting it
+                            object convertedValue = Convert.ChangeType(newValue, property.PropertyType);
+                            property.SetValue(user, convertedValue);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine($"Error setting property '{propertyName}': {ex.Message}");
+                        }
+                    }
+                }
+            }
+        }
+
+        await _dbContext.SaveChangesAsync();
+        _modifiedCells.Clear();
+        await LoadUsersWithProfilesAsync();
+
+        // Notify the View to show the success message
+        RequestShowSuccessDialog?.Invoke();
+        SignChangesCommand.NotifyCanExecuteChanged();  // Disable "Sign" button after save
+    }
+
+    private void SignChanges()
+    {
+        _ = SaveChangesAsync();
+    }
+
+    private bool CanSign()
+    {
+        return _modifiedCells.Count > 0; // Enable Sign button only if there are changes
     }
 }

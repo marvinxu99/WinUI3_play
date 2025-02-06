@@ -1,3 +1,4 @@
+using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml.Controls;
 using MVVM_play.ViewModels;
 using System;
@@ -23,6 +24,7 @@ public sealed partial class DataGridMergedDataPage : Page
         // Subscribe to ViewModel events
         ViewModel.RequestAddProfileDialog += ShowAddProfileDialog;
         ViewModel.RequestUpdateProfileDialog += ShowUpdateProfileDialog;
+        ViewModel.RequestShowSuccessDialog += ShowSaveSuccessDialog;
     }
 
     private async void ShowAddProfileDialog(UserWithProfile user)
@@ -81,9 +83,47 @@ public sealed partial class DataGridMergedDataPage : Page
         if (result == ContentDialogResult.Primary)
         {
             string gender = genderBox.Text;
-            string address = addressBox.Text;
+            string address = addressBox.Text ?? "";
 
             await ViewModel.SaveUpdatedUserProfileAsync(user.Id, gender, address);
         }
+    }
+
+    private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+    {
+        if (e.Row.DataContext is UserWithProfile user)
+        {
+            string? columnName = e.Column.Header.ToString();
+            if (columnName != null)
+            {
+                TextBox? textBox = e.EditingElement as TextBox;
+                object newValue = textBox?.Text ?? "";
+
+                int userId = (int)e.Row.Tag;  // Get associated User ID from Row Tag
+
+                ViewModel.TrackCellChange(userId, columnName, newValue);
+            }
+        }
+    }
+
+    private void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
+    {
+        if (e.Row.DataContext is UserWithProfile user)
+        {
+            e.Row.Tag = user.Id;  // Store User ID in Row Tag
+        }
+    }
+
+    private async void ShowSaveSuccessDialog()
+    {
+        ContentDialog successDialog = new()
+        {
+            Title = "Success",
+            Content = "Changes saved successfully!",
+            CloseButtonText = "OK",
+            XamlRoot = this.XamlRoot
+        };
+
+        await successDialog.ShowAsync();
     }
 }

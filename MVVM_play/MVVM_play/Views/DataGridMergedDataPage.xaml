@@ -25,15 +25,17 @@
         </Grid.RowDefinitions>
 
         <controls:DataGrid x:Name="UsersDataGrid"
-                           Grid.Row="0"
                            ItemsSource="{Binding UsersWithProfiles}"
-                           SelectedItem="{x:Bind ViewModel.SelectedUser, Mode=TwoWay}"
-                           SelectionChanged="{x:Bind ViewModel.DataGridSelectionChanged}"
                            AutoGenerateColumns="False"
                            SelectionMode="Single"
                            HeadersVisibility="Column"
                            IsReadOnly="False"
-                           GridLinesVisibility="All">
+                           GridLinesVisibility="All"
+                           SelectedItem="{x:Bind ViewModel.SelectedUser, Mode=TwoWay}"
+                           SelectionChanged="{x:Bind ViewModel.DataGridSelectionChanged}"
+                           CellEditEnding="{x:Bind DataGrid_CellEditEnding}"
+                           LoadingRow="{x:Bind DataGrid_LoadingRow}"
+                           Grid.Row="0">
 
             <controls:DataGrid.Columns>
                 <!-- User Table Columns -->
@@ -62,13 +64,12 @@
 
         <!-- Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" Grid.Row="1">
-            <Button Content="Add Profile" 
-                Command="{x:Bind ViewModel.AddUserProfileCommand}" 
+            <Button Content="Add Profile" Command="{x:Bind ViewModel.AddUserProfileCommand}" 
                 Margin="10" />
 
-            <Button Content="Update Profile" 
-                Command="{x:Bind ViewModel.UpdateUserProfileCommand}" 
-                Margin="10" />  
+            <Button Content="Update Profile" Command="{x:Bind ViewModel.UpdateUserProfileCommand}" 
+                Margin="10" />
+            <Button Content="Sign" Command="{x:Bind ViewModel.SignChangesCommand}"/>
         </StackPanel>
 
         <!-- Show Selected Person Details -->
