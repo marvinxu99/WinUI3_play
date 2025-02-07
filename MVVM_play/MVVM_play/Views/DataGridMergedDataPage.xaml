@@ -82,5 +82,7 @@
             <TextBlock Text="{Binding SelectedUser.Id}" FontSize="18" Margin="10"/>
         </StackPanel>
 
+        <TeachingTip x:Name="MyTeachingTip" Title="Information" Content="Action completed!" />
     </Grid>
+    
 </Page>
