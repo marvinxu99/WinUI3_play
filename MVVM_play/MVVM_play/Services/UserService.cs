@@ -14,7 +14,7 @@ internal class UserService
         _dbContext = dbContext;
     }
 
-    public async Task<List<User>> GetAllUsersAsync()
+    public async Task<IReadOnlyList<User>> GetAllUsersAsync()
     {
         return await _dbContext.Users.Include(u => u.UserProfile).ToListAsync();
     }
