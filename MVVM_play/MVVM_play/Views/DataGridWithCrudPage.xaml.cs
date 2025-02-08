@@ -16,7 +16,7 @@ namespace MVVM_play.Views
         public DataGridWithCrudPage()
         {
             this.InitializeComponent();
-            ViewModel = new UserViewModel();  // Create ViewModel instance
+            ViewModel = App.GetService<UserViewModel>();
             DataContext = ViewModel;            // Assign DataContext
         }
     }

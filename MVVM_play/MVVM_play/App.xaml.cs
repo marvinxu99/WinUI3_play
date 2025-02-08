@@ -1,4 +1,10 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.UI.Xaml;
+using MVVM_play.Models;
+using MVVM_play.Services;
+using MVVM_play.ViewModels;
+using System;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -10,6 +16,8 @@ namespace MVVM_play;
 /// </summary>
 public partial class App : Application
 {
+    private static Microsoft.Extensions.Hosting.IHost? _host;
+
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
     /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -17,6 +25,32 @@ public partial class App : Application
     public App()
     {
         this.InitializeComponent();
+        _host = CreateHost();
+    }
+
+    private static IHost CreateHost()
+    {
+        return Host.CreateDefaultBuilder()
+            .ConfigureServices((context, services) =>
+            {
+                // Register DbContext
+                services.AddDbContext<DatabaseContext>();
+
+                // Register services
+                services.AddSingleton<UserService>();
+
+                // Register ViewModels
+                services.AddSingleton<UserViewModel>();
+            })
+            .Build();
+    }
+    public static T GetService<T>() where T : class
+    {
+        if (_host == null)
+        {
+            throw new InvalidOperationException("Host has not been initialized yet.");
+        }
+        return _host.Services.GetRequiredService<T>();
     }
 
     /// <summary>

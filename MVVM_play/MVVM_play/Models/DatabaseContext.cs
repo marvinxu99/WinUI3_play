@@ -123,31 +123,31 @@ internal partial class DatabaseContext : DbContext
     }
 
     // Fetch All Users
-    public async Task<List<User>> GetUsersAsync()
-    {
-        return await Users.ToListAsync();
-    }
+    //public async Task<List<User>> GetUsersAsync()
+    //{
+    //    return await Users.ToListAsync();
+    //}
 
-    // Add User
-    public async Task AddUserAsync(User user)
-    {
-        Users.Add(user);
-        await SaveChangesAsync();
-    }
+    //// Add User
+    //public async Task AddUserAsync(User user)
+    //{
+    //    Users.Add(user);
+    //    await SaveChangesAsync();
+    //}
 
-    // Update User
-    public async Task UpdateUserAsync(User user)
-    {
-        Users.Update(user);
-        await SaveChangesAsync();
-    }
+    //// Update User
+    //public async Task UpdateUserAsync(User user)
+    //{
+    //    Users.Update(user);
+    //    await SaveChangesAsync();
+    //}
 
-    // Delete User
-    public async Task DeleteUserAsync(User user)
-    {
-        Users.Remove(user);
-        await SaveChangesAsync();
-    }
+    //// Delete User
+    //public async Task DeleteUserAsync(User user)
+    //{
+    //    Users.Remove(user);
+    //    await SaveChangesAsync();
+    //}
 
     public async Task CreateOrUpdateUserWithProfileAsync(User user, UserProfile userProfile)
     {

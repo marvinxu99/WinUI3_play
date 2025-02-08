@@ -44,8 +44,8 @@ public partial class MainMenuViewModel : ObservableObject
 
             new Separator(),
 
-            new MenuItem { Name = "Layout Test", Glyph = Symbol.Mail, Tooltip = "Test layout", Tag = "MVVM_play.Views.LayoutTestPage" },
-            new MenuItem { Name = "WebView2 Test", Glyph = Symbol.Mail, Tooltip = "Test WebView2", Tag = "MVVM_play.Views.WebView2TestPage" },
+            //new MenuItem { Name = "Layout Test", Glyph = Symbol.Mail, Tooltip = "Test layout", Tag = "MVVM_play.Views.LayoutTestPage" },
+            //new MenuItem { Name = "WebView2 Test", Glyph = Symbol.Mail, Tooltip = "Test WebView2", Tag = "MVVM_play.Views.WebView2TestPage" },
             new MenuItem { Name = "Person Select", Glyph = Symbol.Mail, Tooltip = "Select a person", Tag = "MVVM_play.Views.PersonSelectPage" },
 
             new Separator(),
