@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:MVVM_play.Views"
+    xmlns:helper="using:MVVM_play.Helpers"
     xmlns:vm="using:MVVM_play.ViewModels"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,6 +17,9 @@
         <vm:UserMergedViewModel/>
     </Page.DataContext>
     -->
+    <Page.Resources>
+        <helper:UtcToLocalConverter x:Key="UtcToLocalConverter"/>
+    </Page.Resources>
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -48,7 +52,7 @@
                 <controls:DataGridTextColumn Header="Gender" Binding="{Binding Gender}" Width="80"/>
                 <controls:DataGridTextColumn Header="PrimaryAddress" Binding="{Binding PrimaryAddress}" Width="200"/>
                 <controls:DataGridTextColumn Header="SecondaryAddress" Binding="{Binding SecondaryAddress}" Width="200"/>
-                <controls:DataGridTextColumn Header="CreatedDateTime" Binding="{Binding CreatedDateTime}" Width="120"/>
+                <controls:DataGridTextColumn Header="CreatedDateTime" Binding="{Binding CreatedDateTime, Converter={StaticResource UtcToLocalConverter}}" Width="120"/>
 
                 <!-- Optional: Avatar Column -->
                 <controls:DataGridTemplateColumn Header="Avatar" Width="100">
