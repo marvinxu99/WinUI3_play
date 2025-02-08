@@ -174,14 +174,19 @@ internal partial class UserMergedViewModel : ObservableObject
 
     public async Task SaveChangesAsync()
     {
-        // Update User table
-        foreach (var row in _modifiedUserCells)
-        {
-            int userId = row.Key;
-            var user = await _dbContext.Users.FindAsync(userId);
+        using var transaction = await _dbContext.Database.BeginTransactionAsync(); // Ensure atomic updates
 
-            if (user != null)
+        try
+        {
+            // Update User table
+            foreach (var row in _modifiedUserCells)
             {
+                int userId = row.Key;
+                var user = await _dbContext.Users.FindAsync(userId);
+
+                if (user == null)
+                    continue;       // Skip if user doesn't exist
+
                 foreach (var column in row.Value)
                 {
                     string propertyName = column.Key;
@@ -202,17 +207,24 @@ internal partial class UserMergedViewModel : ObservableObject
                         }
                     }
                 }
+
             }
-        }
 
-        // Update UserProfile table
-        foreach (var row in _modifiedProfileCells)
-        {
-            int userId = row.Key;
-            var profile = await _dbContext.UserProfiles.FirstOrDefaultAsync(up => up.UserId == userId);
-
-            if (profile != null)
+            // Update UserProfile table
+            foreach (var row in _modifiedProfileCells)
             {
+                int userId = row.Key;
+                var profile = await _dbContext.UserProfiles.FirstOrDefaultAsync(up => up.UserId == userId);
+
+                if (profile == null)
+                {
+                    profile = new UserProfile()
+                    {
+                        UserId = userId
+                    };
+                    _dbContext.UserProfiles.Add(profile);
+                }
+
                 foreach (var column in row.Value)
                 {
                     string propertyName = column.Key;
@@ -234,19 +246,27 @@ internal partial class UserMergedViewModel : ObservableObject
                     }
                 }
             }
+
+            // Save changes to database
+            await _dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            _modifiedUserCells.Clear();
+            _modifiedProfileCells.Clear();
+
+            // Refresh UI after saving
+            await LoadUsersWithProfilesAsync();
+
+            // Notify the View to show the success message
+            RequestShowSuccessDialog?.Invoke();
+            SignChangesCommand.NotifyCanExecuteChanged();  // Disable "Sign" button after save
+
         }
-
-        // Save changes to database
-        await _dbContext.SaveChangesAsync();
-        _modifiedUserCells.Clear();
-        _modifiedProfileCells.Clear();
-
-        // Refresh UI after saving
-        await LoadUsersWithProfilesAsync();
-
-        // Notify the View to show the success message
-        RequestShowSuccessDialog?.Invoke();
-        SignChangesCommand.NotifyCanExecuteChanged();  // Disable "Sign" button after save
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            Debug.WriteLine($"Transaction failed: {ex.Message}");
+        }
     }
 
     private void SignChanges()

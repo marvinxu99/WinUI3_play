@@ -16,7 +16,7 @@ internal class UserProfile
     [ForeignKey("UserId")]
     public User? User { get; set; }
 
-    public required string Gender { get; set; }
+    public string? Gender { get; set; }
 
     public string? PrimaryAddress { get; set; }
 
