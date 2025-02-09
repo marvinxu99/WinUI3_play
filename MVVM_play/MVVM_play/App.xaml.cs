@@ -78,23 +78,31 @@ public partial class App : Application
         string envFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MVVM_play");
         string envFilePath = Path.Combine(envFolderPath, ".env");
 
-        if (File.Exists(envFilePath))
+        // Ensure the folder exists
+        if (!Directory.Exists(envFolderPath))
         {
-            var lines = File.ReadAllLines(envFilePath);
-            foreach (var line in lines)
+            Directory.CreateDirectory(envFolderPath);
+        }
+
+        // Create a default .env file if it does not exist
+        if (!File.Exists(envFilePath))
+        {
+            File.WriteAllText(envFilePath, "EMAIL_USERNAME=\nEMAIL_PASSWORD=\n");  // Empty file with placeholders
+            System.Diagnostics.Debug.WriteLine($"Created default .env file at: {envFilePath}");
+        }
+
+        // Load environment variables from the .env file
+        var lines = File.ReadAllLines(envFilePath);
+        foreach (var line in lines)
+        {
+            var parts = line.Split('=', 2);
+            if (parts.Length == 2)
             {
-                var parts = line.Split('=', 2);
-                if (parts.Length == 2)
-                {
-                    Environment.SetEnvironmentVariable(parts[0], parts[1]);
-                }
+                Environment.SetEnvironmentVariable(parts[0], parts[1]);
             }
-            System.Diagnostics.Debug.WriteLine(".env file loaded successfully.");
         }
-        else
-        {
-            System.Diagnostics.Debug.WriteLine("No .env file found.");
-        }
+        System.Diagnostics.Debug.WriteLine(".env file loaded successfully.");
+
     }
 
     /// <summary>
