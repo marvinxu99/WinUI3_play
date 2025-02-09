@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml.Controls;
 using MVVM_play.Models;
+using MVVM_play.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,6 +21,7 @@ internal partial class UserMergedViewModel : ObservableObject
     private UserWithProfile? _selectedUser;
     private readonly Dictionary<int, Dictionary<string, object>> _modifiedUserCells = [];
     private readonly Dictionary<int, Dictionary<string, object>> _modifiedProfileCells = [];
+    private readonly LoggingService _logger;
 
     public UserWithProfile? SelectedUser
     {
@@ -47,16 +49,18 @@ internal partial class UserMergedViewModel : ObservableObject
     public IRelayCommand UpdateUserProfileCommand { get; }
     public IRelayCommand SignChangesCommand { get; }
 
-    public UserMergedViewModel()
+    public UserMergedViewModel(DatabaseContext dbContext, LoggingService logger)
     {
-        _dbContext = new DatabaseContext();
-        //LoadUsersWithProfilesAsync().ConfigureAwait(false);
-        _ = LoadUsersWithProfilesAsync();
+        _dbContext = dbContext;
+        _logger = logger;
 
         // Initialize Commands
         AddUserProfileCommand = new RelayCommand(() => RequestAddProfileDialog?.Invoke(SelectedUser!), CanAdd);
         UpdateUserProfileCommand = new RelayCommand(() => RequestUpdateProfileDialog?.Invoke(SelectedUser!), CanEdit);
         SignChangesCommand = new RelayCommand(SignChanges, CanSign);
+
+        //LoadUsersWithProfilesAsync().ConfigureAwait(false);
+        _ = LoadUsersWithProfilesAsync();
     }
 
     public async Task LoadUsersWithProfilesAsync()
@@ -94,6 +98,9 @@ internal partial class UserMergedViewModel : ObservableObject
 
         // Notify SignChangesCommand if it can execute
         SignChangesCommand.NotifyCanExecuteChanged();
+
+        _logger.Information("UI Refreshed in LoadUsersWithProfilesAsync() in ViewModel.");
+
     }
 
     // Receive user input from View and save new profile

@@ -52,7 +52,10 @@
                 <controls:DataGridTextColumn Header="Gender" Binding="{Binding Gender}" Width="80"/>
                 <controls:DataGridTextColumn Header="PrimaryAddress" Binding="{Binding PrimaryAddress}" Width="200"/>
                 <controls:DataGridTextColumn Header="SecondaryAddress" Binding="{Binding SecondaryAddress}" Width="200"/>
-                <controls:DataGridTextColumn Header="CreatedDateTime" Binding="{Binding CreatedDateTime, Converter={StaticResource UtcToLocalConverter}}" Width="120"/>
+                <controls:DataGridTextColumn Header="CreatedDateTime" 
+                                             Binding="{Binding CreatedDateTime, 
+                                             Converter={StaticResource UtcToLocalConverter}}" 
+                                             Width="150"/>
 
                 <!-- Optional: Avatar Column -->
                 <controls:DataGridTemplateColumn Header="Avatar" Width="100">

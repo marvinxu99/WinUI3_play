@@ -1,6 +1,7 @@
 ﻿using MVVM_play.Models;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -21,30 +22,25 @@ namespace MVVM_play.Services
         Critical     // Fatal errors, application may crash
     }
 
-
-    public class LoggingService
+    internal partial class LoggingService : IDisposable
     {
-        private readonly string _logFilePath;
+        private readonly LoggingDbContext _dbContext;
+        private readonly string _logFilePath = "app.log";
         private const long MaxFileSizeBytes = 5 * 1024 * 1024; // 5MB max size before rotation
         private const int MaxLogFilesToKeep = 10; // Keep last 10 log files
         private static readonly ConcurrentQueue<LogEntry> _logQueue = new();
-        private static readonly Task _logWriterTask;
-        private static readonly Lock _lock = new();
-        private readonly LoggingDbContext _dbContext;
+        private readonly CancellationTokenSource _cts = new();
+        private readonly Task _logWriterTask;
+        private static readonly object _fileLock = new();
 
-        static LoggingService()
+        public LoggingService(LoggingDbContext dbContext)
         {
+            _dbContext = dbContext;
+            _dbContext.Database.EnsureCreated(); // Ensure database exists
             _logWriterTask = Task.Run(ProcessLogQueue);
         }
 
-        public LoggingService(string logFilePath = "app.log")
-        {
-            _logFilePath = logFilePath;
-            _dbContext = new LoggingDbContext();
-            _dbContext.Database.EnsureCreated(); // Ensure database exists
-        }
-
-        public static void Log(LogLevel level, string message, object? context = null)
+        public void Log(LogLevel level, string message, object? context = null)
         {
             var logEntry = new LogEntry
             {
@@ -59,60 +55,64 @@ namespace MVVM_play.Services
 
             if (level == LogLevel.Critical)
             {
-                Task.Run(() => SendEmailAlert(logEntry)); // Send email for Critical logs
+                _ = Task.Run(() => SendEmailAlert(logEntry)); // Send email for Critical logs
             }
         }
 
-        public static void Trace(string message, object? context = null) => Log(LogLevel.Trace, message, context);
+        public void Trace(string message, object? context = null) => Log(LogLevel.Trace, message, context);
         public void Debug(string message, object? context = null) => Log(LogLevel.Debug, message, context);
         public void Information(string message, object? context = null) => Log(LogLevel.Information, message, context);
         public void Warning(string message, object? context = null) => Log(LogLevel.Warning, message, context);
         public void Error(string message, object? context = null) => Log(LogLevel.Error, message, context);
         public void Critical(string message, object? context = null) => Log(LogLevel.Critical, message, context);
 
-        private static async Task ProcessLogQueue()
+        private async Task ProcessLogQueue()
         {
-            using var dbContext = new LoggingDbContext();
-
-            while (true)
+            while (!_cts.Token.IsCancellationRequested)
             {
                 if (!_logQueue.IsEmpty)
                 {
-                    lock (_lock)
+                    List<LogEntry> logBatch = new();
+
+                    while (_logQueue.TryDequeue(out LogEntry? logEntry))
                     {
-                        RotateLogsIfNeeded(); // Check for log file rotation
-                        using StreamWriter writer = new("app.log", append: true);
+                        logBatch.Add(logEntry);
+                    }
 
-                        while (_logQueue.TryDequeue(out LogEntry? logEntry))
+                    if (logBatch.Any())
+                    {
+                        lock (_fileLock)
                         {
-                            // Write to File
-                            writer.WriteLine(JsonSerializer.Serialize(logEntry));
-
-                            // Write to Database
-                            dbContext.Logs.Add(logEntry);
+                            RotateLogsIfNeeded();
+                            using StreamWriter writer = new(_logFilePath, append: true);
+                            foreach (var log in logBatch)
+                            {
+                                writer.WriteLine(JsonSerializer.Serialize(log));
+                            }
                         }
-                        dbContext.SaveChanges();
+
+                        await _dbContext.Logs.AddRangeAsync(logBatch);
+                        await _dbContext.SaveChangesAsync();
                     }
                 }
 
-                await Task.Delay(500); // Batch process logs every 500ms
+                await Task.Delay(500, _cts.Token); // Batch process logs every 500ms
             }
         }
 
-        private static void RotateLogsIfNeeded()
+        private void RotateLogsIfNeeded()
         {
-            FileInfo logFile = new("app.log");
+            FileInfo logFile = new(_logFilePath);
             if (!logFile.Exists) return;
 
             if (logFile.Length > MaxFileSizeBytes)
             {
                 string archiveName = $"logs/app_{DateTime.UtcNow:yyyyMMdd_HHmmss}.log";
-                Directory.CreateDirectory("logs"); // Ensure logs folder exists
-                File.Move("app.log", archiveName);
+                Directory.CreateDirectory("logs");
+                File.Move(_logFilePath, archiveName);
 
                 Console.WriteLine($"Log file rotated: {archiveName}");
 
-                // Cleanup old logs (keep last MaxLogFilesToKeep)
                 var oldLogs = Directory.GetFiles("logs", "app_*.log")
                     .Select(f => new FileInfo(f))
                     .OrderByDescending(f => f.CreationTimeUtc)
@@ -126,32 +126,31 @@ namespace MVVM_play.Services
             }
         }
 
-        private static void SendEmailAlert(LogEntry logEntry)
+        private void SendEmailAlert(LogEntry logEntry)
         {
             try
             {
-                var smtpClient = new SmtpClient("smtp.your-email-provider.com") // Replace with actual SMTP server
+                var smtpClient = new SmtpClient("smtp.gmail.com")
                 {
-                    Port = 587, // Typically 587 for TLS, 465 for SSL
-                    Credentials = new NetworkCredential("your-email@example.com", "your-email-password"), // Update credentials
+                    Port = 587,
+                    Credentials = new NetworkCredential(
+                        Environment.GetEnvironmentVariable("EMAIL_USERNAME"),
+                        Environment.GetEnvironmentVariable("EMAIL_PASSWORD")),
                     EnableSsl = true
                 };
 
                 var mailMessage = new MailMessage
                 {
-                    From = new MailAddress("your-email@example.com"),
+                    From = new MailAddress("noreply@yourdomain.com"),
                     Subject = $"[CRITICAL] {logEntry.Message}",
                     Body = $"Timestamp: {logEntry.Timestamp}\n" +
                            $"Level: {logEntry.Level}\n" +
                            $"Message: {logEntry.Message}\n" +
-                           $"Context: {logEntry.Context}\n" +
-                           $"Machine: {logEntry.MachineName}\n" +
-                           $"Thread: {logEntry.ThreadId}",
+                           $"Context: {logEntry.Context}\n",
                     IsBodyHtml = false
                 };
 
-                mailMessage.To.Add("admin@example.com"); // Replace with recipient email
-
+                mailMessage.To.Add("admin@yourdomain.com");
                 smtpClient.Send(mailMessage);
                 Console.WriteLine("Critical log email sent.");
             }
@@ -159,6 +158,13 @@ namespace MVVM_play.Services
             {
                 Console.WriteLine($"Failed to send alert email: {ex.Message}");
             }
+        }
+
+        public void Dispose()
+        {
+            _cts.Cancel();
+            _logWriterTask.Wait();
+            _cts.Dispose();
         }
     }
 }

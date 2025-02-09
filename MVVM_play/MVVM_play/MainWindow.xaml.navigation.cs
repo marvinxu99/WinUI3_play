@@ -44,7 +44,16 @@ public sealed partial class MainWindow : Window, INavigation
                     Type? pageType = Type.GetType(category.Tag);
                     if (pageType != null)
                     {
-                        ContentFrame.Navigate(pageType);
+                        // Using DI for DataGridMergedDataPage
+                        if (category.Tag.Contains("DataGridMergedDataPage"))
+                        {
+                            ContentFrame.Navigate(typeof(DataGridMergedDataPage), App.GetService<DataGridMergedDataPage>());
+                        }
+                        else
+                        {
+                            ContentFrame.Navigate(pageType);
+                        }
+
                         sender.Header = category.Name;      // Update the header
                     }
                     else

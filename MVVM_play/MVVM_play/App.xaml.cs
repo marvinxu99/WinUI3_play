@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using MVVM_play.Models;
 using MVVM_play.Services;
 using MVVM_play.ViewModels;
+using MVVM_play.Views;
 using System;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -36,17 +37,30 @@ public partial class App : Application
                 // Register DbContext
                 services.AddDbContext<DatabaseContext>();
 
+                // Register DbContext
+                services.AddDbContext<LoggingDbContext>();
+
+                // Register LoggingService
+                services.AddSingleton<LoggingService>();
+
                 // Register services
                 services.AddSingleton<UserService>();
 
                 // Register ViewModels
                 services.AddSingleton<UserViewModel>();
+
+                // Register ViewModel as Scoped (New Instance Per Request)
+                services.AddSingleton<UserMergedViewModel>();
+
+                // Register Page (View) as Scoped
+                services.AddSingleton<DataGridMergedDataPage>();
+
             })
             .Build();
     }
     public static T GetService<T>() where T : class
     {
-        if (_host == null)
+        if (_host?.Services == null)
         {
             throw new InvalidOperationException("Host has not been initialized yet.");
         }

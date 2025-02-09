@@ -2,7 +2,7 @@
 
 namespace MVVM_play.Models;
 
-internal class UserWithProfile
+public class UserWithProfile
 {
     public int Id { get; set; }  // User ID
     public string Name { get; set; } = string.Empty;
@@ -18,7 +18,7 @@ internal class UserWithProfile
     public DateTime? CreatedDateTime { get; set; }
 
     // Constructor to Map Data
-    public UserWithProfile(Models.User user, UserProfile? profile)
+    internal UserWithProfile(Models.User user, UserProfile? profile)
     {
         Id = user.Id;
         Name = user.Name;

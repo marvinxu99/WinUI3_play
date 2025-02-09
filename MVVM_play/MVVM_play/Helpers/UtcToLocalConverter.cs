@@ -9,7 +9,7 @@ internal partial class UtcToLocalConverter : IValueConverter
     {
         if (value is DateTime utcTime)
         {
-            return utcTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
+            return utcTime.ToLocalTime().ToString("dd-MMM-yyyy HH:mm");
         }
         return value;
     }

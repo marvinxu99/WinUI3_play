@@ -12,14 +12,14 @@ namespace MVVM_play.Views;
 /// <summary>
 /// An empty page that can be used on its own or navigated to within a Frame.
 /// </summary>
-public sealed partial class DataGridMergedDataPage : Page
+internal sealed partial class DataGridMergedDataPage : Page
 {
     private UserMergedViewModel ViewModel { get; }
 
-    public DataGridMergedDataPage()
+    public DataGridMergedDataPage(UserMergedViewModel userMergedViewModel)
     {
         this.InitializeComponent();
-        ViewModel = new UserMergedViewModel();  // Create ViewModel instance
+        ViewModel = userMergedViewModel;    // Using DI to inject a ViewModel instance
         DataContext = ViewModel;            // Assign DataContext
 
         // Subscribe to ViewModel events
