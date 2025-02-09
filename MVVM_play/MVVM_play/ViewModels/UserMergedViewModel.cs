@@ -117,6 +117,7 @@ public partial class UserMergedViewModel : ObservableObject
         await _dbContext.SaveChangesAsync();
 
         Debug.WriteLine($"User Profile Added: {gender}, {primaryAddress}");
+
         await LoadUsersWithProfilesAsync(); // Refresh UI
     }
 
@@ -142,12 +143,12 @@ public partial class UserMergedViewModel : ObservableObject
     public void DataGridSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         Debug.WriteLine("Selected Changed");
-        SelectedUser = (UserWithProfile?)e.AddedItems[0];
+        SelectedUser = e.AddedItems.Count > 0 ? (UserWithProfile?)e.AddedItems[0] : null;
 
         // Notify commands to update based on new selection
-        AddUserProfileCommand.NotifyCanExecuteChanged();
-        UpdateUserProfileCommand.NotifyCanExecuteChanged();
-        SignChangesCommand.NotifyCanExecuteChanged();
+        //AddUserProfileCommand.NotifyCanExecuteChanged();
+        //UpdateUserProfileCommand.NotifyCanExecuteChanged();
+        //SignChangesCommand.NotifyCanExecuteChanged();
     }
 
     public void TrackCellChange(int userId, string columnName, object newValue)

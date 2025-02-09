@@ -1,5 +1,6 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using MVVM_play.Models;
 using MVVM_play.ViewModels;
 using System;
@@ -125,6 +126,13 @@ public sealed partial class DataGridMergedDataPage : Page
     // TODO: Consider using MyTeachingTip.IsOpen = true;
     private async void ShowSaveSuccessDialog()
     {
+
+        // Close any currently open ContentDialog
+        foreach (var openDialog in VisualTreeHelper.GetOpenPopupsForXamlRoot(this.XamlRoot))
+        {
+            openDialog.IsOpen = false;
+        }
+
         ContentDialog successDialog = new()
         {
             Title = "Success",
