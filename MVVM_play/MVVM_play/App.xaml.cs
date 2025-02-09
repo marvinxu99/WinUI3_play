@@ -6,6 +6,7 @@ using MVVM_play.Services;
 using MVVM_play.ViewModels;
 using MVVM_play.Views;
 using System;
+using System.IO;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -17,7 +18,8 @@ namespace MVVM_play;
 /// </summary>
 public partial class App : Application
 {
-    private static Microsoft.Extensions.Hosting.IHost? _host;
+    private Window? m_window;
+    private static IHost? _host;
 
     /// <summary>
     /// Initializes the singleton application object.  This is the first line of authored code
@@ -26,6 +28,9 @@ public partial class App : Application
     public App()
     {
         this.InitializeComponent();
+
+        LoadEnvironmentVariables(); // Load .env variables at startup
+
         _host = CreateHost();
     }
 
@@ -67,6 +72,31 @@ public partial class App : Application
         return _host.Services.GetRequiredService<T>();
     }
 
+    private void LoadEnvironmentVariables()
+    {
+        //string envFilePath = Path.Combine(AppContext.BaseDirectory, ".env");
+        string envFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MVVM_play");
+        string envFilePath = Path.Combine(envFolderPath, ".env");
+
+        if (File.Exists(envFilePath))
+        {
+            var lines = File.ReadAllLines(envFilePath);
+            foreach (var line in lines)
+            {
+                var parts = line.Split('=', 2);
+                if (parts.Length == 2)
+                {
+                    Environment.SetEnvironmentVariable(parts[0], parts[1]);
+                }
+            }
+            System.Diagnostics.Debug.WriteLine(".env file loaded successfully.");
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("No .env file found.");
+        }
+    }
+
     /// <summary>
     /// Invoked when the application is launched.
     /// </summary>
@@ -88,5 +118,5 @@ public partial class App : Application
     //    e.Handled = true;
     //}
 
-    private Window? m_window;
+
 }

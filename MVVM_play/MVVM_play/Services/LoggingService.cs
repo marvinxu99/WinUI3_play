@@ -30,7 +30,12 @@ public partial class LoggingService : IDisposable
     private const long MaxFileSizeBytes = 5 * 1024 * 1024; // 5MB max size before rotation
     private const int MaxLogFilesToKeep = 10; // Keep last 10 log files
     private static readonly ConcurrentQueue<LogEntry> _logQueue = new();
+
+    /* Using _cts ensures that background logging stops cleanly when the service is no longer needed. 
+     * _cts.Cancel() is called on Dispose
+     */
     private readonly CancellationTokenSource _cts = new();
+
     private readonly Task _logWriterTask;
     private static readonly Lock _fileLock = new();
 
@@ -47,7 +52,8 @@ public partial class LoggingService : IDisposable
 
         System.Diagnostics.Debug.WriteLine("ProcessLogQueue task started.");
 
-        //TestDatabaseLogging();
+        TestLogging();
+
     }
 
     public void Log(LogLevel level, string message, object? context = null)
@@ -126,7 +132,7 @@ public partial class LoggingService : IDisposable
             Directory.CreateDirectory("logs");
             File.Move(_logFilePath, archiveName);
 
-            Console.WriteLine($"Log file rotated: {archiveName}");
+            System.Diagnostics.Debug.WriteLine($"Log file rotated: {archiveName}");
 
             var oldLogs = Directory.GetFiles("logs", "app_*.log")
                 .Select(f => new FileInfo(f))
@@ -145,18 +151,25 @@ public partial class LoggingService : IDisposable
     {
         try
         {
+            string? emailUser = Environment.GetEnvironmentVariable("EMAIL_USERNAME");
+            string? emailPassword = Environment.GetEnvironmentVariable("EMAIL_PASSWORD");
+
+            if (string.IsNullOrEmpty(emailUser) || string.IsNullOrEmpty(emailPassword))
+            {
+                System.Diagnostics.Debug.WriteLine("Email credentials are missing!");
+                return;
+            }
+
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
                 Port = 587,
-                Credentials = new NetworkCredential(
-                    Environment.GetEnvironmentVariable("EMAIL_USERNAME"),
-                    Environment.GetEnvironmentVariable("EMAIL_PASSWORD")),
+                Credentials = new NetworkCredential(emailUser, emailPassword),
                 EnableSsl = true
             };
 
             var mailMessage = new MailMessage
             {
-                From = new MailAddress("noreply@yourdomain.com"),
+                From = new MailAddress("marvinxu99@gmail.com"),
                 Subject = $"[CRITICAL] {logEntry.Message}",
                 Body = $"Timestamp: {logEntry.Timestamp}\n" +
                        $"Level: {logEntry.Level}\n" +
@@ -165,13 +178,13 @@ public partial class LoggingService : IDisposable
                 IsBodyHtml = false
             };
 
-            mailMessage.To.Add("admin@yourdomain.com");
+            mailMessage.To.Add("marvinxu99@hotmail.com");
             smtpClient.Send(mailMessage);
-            Console.WriteLine("Critical log email sent.");
+            System.Diagnostics.Debug.WriteLine("Critical log email sent.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed to send alert email: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Failed to send alert email: {ex.Message}");
         }
     }
 
@@ -193,43 +206,21 @@ public partial class LoggingService : IDisposable
 
         if (disposing)
         {
-            Console.WriteLine("LoggingService is being disposed.");
+            System.Diagnostics.Debug.WriteLine("LoggingService is being disposed.");
 
-            // Dispose managed resources
+            // Cancel the logging process
             _cts.Cancel();
-            _logWriterTask.Wait();
+            _logWriterTask.Wait();  // Ensure the task stops before disposing resources
             _cts.Dispose();
         }
 
         _disposed = true;
     }
 
-    //public void TestDatabaseLogging()
-    //{
-    //    try
-    //    {
-    //        var logEntry = new LogEntry
-    //        {
-    //            Timestamp = DateTime.UtcNow,
-    //            Level = "Debug",
-    //            Message = "Testing database logging",
-    //            Context = null
-    //        };
-
-    //        _dbContext.Logs.Add(logEntry);
-    //        _dbContext.SaveChanges();
-
-    //        Console.WriteLine("Test log saved successfully!");
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Console.WriteLine($"Database test failed: {ex.Message}");
-    //    }
-    //}
-
-    //public void TestLogging()
-    //{
-    //    Log(LogLevel.Information, "Testing log queue processing.");
-    //}
+    public void TestLogging()
+    {
+        //Log(LogLevel.Information, "Testing log queue processing.");
+        Critical("Test Message");
+    }
 
 }
