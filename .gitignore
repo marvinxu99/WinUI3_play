@@ -453,3 +453,4 @@ TEST-results.xml
 /MVVM_play/MVVM_play/app.db
 /MVVM_play/MVVM_play/app.db-shm
 /MVVM_play/MVVM_play/app.db-wal
+/MVVM_play/MVVM_play/logging.db
