@@ -11,7 +11,7 @@ public class UserWithProfile
 
     // UserProfile fields
     public int UserProfileId { get; set; }
-    public string Gender { get; set; } = string.Empty;
+    public string? Gender { get; set; } = string.Empty;
     public string? PrimaryAddress { get; set; }
     public string? SecondaryAddress { get; set; }
     public string? AvatarUrl { get; set; }

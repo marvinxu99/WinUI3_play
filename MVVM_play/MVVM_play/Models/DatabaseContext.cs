@@ -56,14 +56,14 @@ public partial class DatabaseContext : DbContext
 
         if (!Users.Any())  // Check if Users table is empty
         {
-            Users.AddRange(new[]
-            {
+            Users.AddRange(
+            [
                 new User { Name = "Alice", Age = 25, City = "Vancouver" },
                 new User { Name = "Bob", Age = 30, City = "Toronto" },
                 new User { Name = "Charlie", Age = 35, City = "Calgary" },
                 new User { Name = "David", Age = 40, City = "Montreal" },
                 new User { Name = "Eve", Age = 28, City = "Ottawa" }
-            });
+            ]);
 
             this.SaveChanges(); // Save data to SQLite
         }

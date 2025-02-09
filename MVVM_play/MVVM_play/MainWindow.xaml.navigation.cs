@@ -44,7 +44,10 @@ public sealed partial class MainWindow : Window, INavigation
                     Type? pageType = Type.GetType(category.Tag);
                     if (pageType != null)
                     {
-                        ContentFrame.Navigate(pageType);
+                        ContentFrame.Navigate(pageType);    // Pages must have a parameterless constructor for Navigate() to work.
+                                                            // Without it, the XAML system couldn't instantiate DataGridMergedDataPage,
+                                                            // leading to the null reference issue
+
                         sender.Header = category.Name;      // Update the header
                     }
                     else
@@ -59,7 +62,7 @@ public sealed partial class MainWindow : Window, INavigation
 
     public List<NavigationViewItem> GetNavigationViewItems()
     {
-        List<NavigationViewItem> result = new();
+        List<NavigationViewItem> result = [];
 
         // If using MenuItemsSource (dynamic items)
         if (MainNavigationView.MenuItemsSource is IEnumerable<MenuItemBase> categories)
@@ -135,11 +138,6 @@ public sealed partial class MainWindow : Window, INavigation
         //return MainNavigationView.SelectedItem as NavigationViewItem;
         var selectedItem = MainNavigationView.SelectedItem as NavigationViewItem;
 
-        if (selectedItem == null)
-        {
-            throw new InvalidOperationException("No NavigationViewItem is currently selected.");
-        }
-
-        return selectedItem;
+        return selectedItem ?? throw new InvalidOperationException("No NavigationViewItem is currently selected.");
     }
 }

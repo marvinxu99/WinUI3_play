@@ -31,7 +31,7 @@ namespace MVVM_play.Services
         private static readonly ConcurrentQueue<LogEntry> _logQueue = new();
         private readonly CancellationTokenSource _cts = new();
         private readonly Task _logWriterTask;
-        private static readonly object _fileLock = new();
+        private static readonly Lock _fileLock = new();
         private bool _disposed = false;
 
         public LoggingService(LoggingDbContext dbContext)
@@ -73,14 +73,14 @@ namespace MVVM_play.Services
             {
                 if (!_logQueue.IsEmpty)
                 {
-                    List<LogEntry> logBatch = new();
+                    List<LogEntry> logBatch = [];
 
                     while (_logQueue.TryDequeue(out LogEntry? logEntry))
                     {
                         logBatch.Add(logEntry);
                     }
 
-                    if (logBatch.Any())
+                    if (logBatch.Count > 0)
                     {
                         lock (_fileLock)
                         {

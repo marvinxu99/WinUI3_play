@@ -14,9 +14,13 @@ namespace MVVM_play.Views;
 /// </summary>
 public sealed partial class DataGridMergedDataPage : Page
 {
-    //private UserMergedViewModel ViewModel { get; }
-    private UserMergedViewModel ViewModel = null!;
+    private UserMergedViewModel ViewModel { get; }
 
+    /* NOTE: Added this in order for ContentFrame.Navigate() to work
+     * Pages must have a parameterless constructor for Navigate() to work.
+     * Use App.GetService<T>() inside the constructor to fetch dependencies.
+     * Register pages as Transient (AddTransient<T>()) in DI for best results.
+     */
     public DataGridMergedDataPage() : this(App.GetService<UserMergedViewModel>()) { }
 
     public DataGridMergedDataPage(UserMergedViewModel userMergedViewModel)
@@ -86,8 +90,8 @@ public sealed partial class DataGridMergedDataPage : Page
         var result = await dialog.ShowAsync();
         if (result == ContentDialogResult.Primary)
         {
-            string gender = genderBox.Text;
-            string address = addressBox.Text ?? "";
+            string gender = genderBox.Text ?? string.Empty;
+            string address = addressBox.Text ?? string.Empty;
 
             await ViewModel.SaveUpdatedUserProfileAsync(user.Id, gender, address);
         }
