@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MVVM_play.ViewModels;
 
-internal partial class UserViewModel : ObservableObject
+public partial class UserViewModel : ObservableObject
 {
     private readonly UserService _userService;
 

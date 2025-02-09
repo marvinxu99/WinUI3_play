@@ -44,16 +44,16 @@ public partial class App : Application
                 services.AddSingleton<LoggingService>();
 
                 // Register services
-                services.AddSingleton<UserService>();
+                services.AddScoped<UserService>();
 
                 // Register ViewModels
-                services.AddSingleton<UserViewModel>();
+                services.AddScoped<UserViewModel>();
 
                 // Register ViewModel as Scoped (New Instance Per Request)
-                services.AddSingleton<UserMergedViewModel>();
+                services.AddScoped<UserMergedViewModel>();
 
-                // Register Page (View) as Scoped
-                services.AddSingleton<DataGridMergedDataPage>();
+                // Register Page (View) - usually shold be transient
+                services.AddTransient<DataGridMergedDataPage>();
 
             })
             .Build();

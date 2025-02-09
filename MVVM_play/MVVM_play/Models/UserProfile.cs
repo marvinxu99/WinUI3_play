@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MVVM_play.Models;
 
-internal class UserProfile
+public class UserProfile
 {
     [Key]
     public int Id { get; set; }  // Primary Key

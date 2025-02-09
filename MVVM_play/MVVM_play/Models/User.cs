@@ -2,7 +2,7 @@
 
 namespace MVVM_play.Models;
 
-internal class User
+public class User
 {
     public int Id { get; set; }  // Primary Key
     public required string Name { get; set; }

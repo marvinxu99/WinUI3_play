@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MVVM_play.Models
 {
-    internal class LogEntry
+    public class LogEntry
     {
         [Key]
         public int Id { get; set; } // Primary Key

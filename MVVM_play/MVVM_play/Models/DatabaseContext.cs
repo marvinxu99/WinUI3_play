@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MVVM_play.Models;
 
-internal partial class DatabaseContext : DbContext
+public partial class DatabaseContext : DbContext
 {
     public DbSet<User> Users { get; set; }  // Example table
     public DbSet<UserProfile> UserProfiles { get; set; }  // Example table

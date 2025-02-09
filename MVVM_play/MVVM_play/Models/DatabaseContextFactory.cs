@@ -6,7 +6,7 @@ namespace MVVM_play.Models;
 /*
  * Since EF CLI cannot create DbContext automatically, manually provide the factory.
  */
-internal class DatabaseContextFactory : IDesignTimeDbContextFactory<DatabaseContext>
+public class DatabaseContextFactory : IDesignTimeDbContextFactory<DatabaseContext>
 {
     public DatabaseContext CreateDbContext(string[] args)
     {

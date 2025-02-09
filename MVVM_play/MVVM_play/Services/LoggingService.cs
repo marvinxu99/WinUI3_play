@@ -22,7 +22,7 @@ namespace MVVM_play.Services
         Critical     // Fatal errors, application may crash
     }
 
-    internal partial class LoggingService : IDisposable
+    public partial class LoggingService : IDisposable
     {
         private readonly LoggingDbContext _dbContext;
         private readonly string _logFilePath = "app.log";
@@ -32,6 +32,7 @@ namespace MVVM_play.Services
         private readonly CancellationTokenSource _cts = new();
         private readonly Task _logWriterTask;
         private static readonly object _fileLock = new();
+        private bool _disposed = false;
 
         public LoggingService(LoggingDbContext dbContext)
         {
@@ -162,9 +163,29 @@ namespace MVVM_play.Services
 
         public void Dispose()
         {
-            _cts.Cancel();
-            _logWriterTask.Wait();
-            _cts.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /*
+         * Handles both managed & unmanaged resources properly
+         * Prevents multiple disposal attempts
+         * Supports inheritance (if needed in derived classes)
+         */
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                // Dispose managed resources
+                _cts.Cancel();
+                _logWriterTask.Wait();
+                _cts.Dispose();
+            }
+
+            _disposed = true;
         }
     }
 }

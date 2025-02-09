@@ -3,7 +3,7 @@ using System.IO;
 
 namespace MVVM_play.Models;
 
-internal class LoggingDbContext : DbContext
+public class LoggingDbContext : DbContext
 {
     public DbSet<LogEntry> Logs { get; set; }  // Log table
 

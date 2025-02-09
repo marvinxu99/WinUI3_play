@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace MVVM_play.ViewModels;
 
 
-internal partial class UserMergedViewModel : ObservableObject
+public partial class UserMergedViewModel : ObservableObject
 {
     private readonly DatabaseContext _dbContext;
     private UserWithProfile? _selectedUser;

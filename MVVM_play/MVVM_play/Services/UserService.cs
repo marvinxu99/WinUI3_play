@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MVVM_play.Services;
 
-internal class UserService
+public class UserService
 {
     private readonly DatabaseContext _dbContext;
 
