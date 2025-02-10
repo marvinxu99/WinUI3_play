@@ -10,12 +10,20 @@ namespace MVVM_play.Models;
 
 public partial class DatabaseContext : DbContext
 {
+    public DbSet<ClinicalEvent> ClinicalEvent { get; set; }
+    public DbSet<CodeValue> CodeValue { get; set; }
+    public DbSet<CodeValueSet> CodeValueSet { get; set; }
+    public DbSet<OrderCatalog> OrderCatalog { get; set; }
+    public DbSet<OrderCatalogSynonym> OrderCatalogSynonym { get; set; }
+    public DbSet<OrderTask> OrderTask { get; set; }
+    public DbSet<TaskActivity> TaskActivity { get; set; }
+
+
     public DbSet<User> Users { get; set; }  // Example table
     public DbSet<UserProfile> UserProfiles { get; set; }  // Example table
     public DbSet<UserProfileHx> UserProfilesHx { get; set; }  // Example table
 
-    public DbSet<ClinicalEvent> ClinicalEvent { get; set; }
-    public DbSet<OrderCatalog> OrderCatalog { get; set; }
+
 
     public DatabaseContext() { }  // Parameterless Constructor required for migrations
 
