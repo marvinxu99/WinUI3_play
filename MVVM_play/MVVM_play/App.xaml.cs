@@ -72,7 +72,7 @@ public partial class App : Application
         return _host.Services.GetRequiredService<T>();
     }
 
-    private void LoadEnvironmentVariables()
+    private static void LoadEnvironmentVariables()
     {
         //string envFilePath = Path.Combine(AppContext.BaseDirectory, ".env");
         string envFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MVVM_play");

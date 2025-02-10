@@ -13,7 +13,7 @@ public class DatabaseContextFactory : IDesignTimeDbContextFactory<DatabaseContex
         var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
 
         optionsBuilder.UseSqlite("Data Source=app.db");  // Use relative path
-        // app.db location: E:\eDev\csharp\WinUI\MVVM_play\MVVM_play
+                                                         // app.db location: E:\eDev\csharp\WinUI\MVVM_play\MVVM_play
 
         return new DatabaseContext(optionsBuilder.Options);
     }
