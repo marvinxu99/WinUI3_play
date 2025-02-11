@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Media;
 using MVVM_play.Models;
 using MVVM_play.ViewModels;
 using System;
+using System.Diagnostics;
 
 namespace MVVM_play.Views;
 
@@ -32,6 +33,9 @@ public sealed partial class DataGridMergedDataPage : Page
         ViewModel.RequestAddProfileDialog += ShowAddProfileDialog;
         ViewModel.RequestUpdateProfileDialog += ShowUpdateProfileDialog;
         ViewModel.RequestShowSuccessDialog += ShowSaveSuccessDialog;
+
+        Debug.WriteLine("exiting Constructor - DataGridMergedDataPage()");
+
     }
 
     private async void ShowAddProfileDialog(UserWithProfile user)

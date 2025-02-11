@@ -55,7 +55,7 @@ public partial class App : Application
                 services.AddScoped<UserViewModel>();
 
                 // Register ViewModel as Scoped (New Instance Per Request)
-                services.AddScoped<UserMergedViewModel>();
+                services.AddTransient<UserMergedViewModel>();
 
                 // Register Page (View) - usually shold be transient
                 services.AddTransient<DataGridMergedDataPage>();
