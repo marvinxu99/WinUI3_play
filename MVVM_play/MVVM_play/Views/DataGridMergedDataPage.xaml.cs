@@ -5,9 +5,6 @@ using MVVM_play.Models;
 using MVVM_play.ViewModels;
 using System;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace MVVM_play.Views;
 
 /// <summary>
@@ -17,7 +14,8 @@ public sealed partial class DataGridMergedDataPage : Page
 {
     private UserMergedViewModel ViewModel { get; }
 
-    /* NOTE: Added this in order for ContentFrame.Navigate() to work
+    /* 
+     * NOTE: Added this in order for ContentFrame.Navigate() to work
      * Pages must have a parameterless constructor for Navigate() to work.
      * Use App.GetService<T>() inside the constructor to fetch dependencies.
      * Register pages as Transient (AddTransient<T>()) in DI for best results.

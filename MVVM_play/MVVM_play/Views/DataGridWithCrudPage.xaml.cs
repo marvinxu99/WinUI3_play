@@ -13,10 +13,19 @@ namespace MVVM_play.Views
     {
         private UserViewModel ViewModel { get; }
 
-        public DataGridWithCrudPage()
+        /*
+         * Added this in order for CententFrame.Navigate() to work
+         * (NavigationView_SelectionChange() in MainWindow.xaml.navigation.cs)
+         */
+        public DataGridWithCrudPage() : this(App.GetService<UserViewModel>()) { }
+
+        public DataGridWithCrudPage(UserViewModel userViewModel)
         {
             this.InitializeComponent();
-            ViewModel = App.GetService<UserViewModel>();
+
+            //ViewModel = App.GetService<UserViewModel>();
+            ViewModel = userViewModel;       // using Contructor DI
+
             DataContext = ViewModel;            // Assign DataContext
         }
     }

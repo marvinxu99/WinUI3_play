@@ -132,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Constants\" />
+    <Folder Include="Data\Seed\" />
   </ItemGroup>
 
   <!--

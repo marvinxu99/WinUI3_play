@@ -15,6 +15,8 @@ public partial class DatabaseContext : DbContext
     public DbSet<CodeValueSet> CodeValueSet { get; set; }
     public DbSet<OrderCatalog> OrderCatalog { get; set; }
     public DbSet<OrderCatalogSynonym> OrderCatalogSynonym { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderAction> OrderAction { get; set; }
     public DbSet<OrderTask> OrderTask { get; set; }
     public DbSet<TaskActivity> TaskActivity { get; set; }
 
@@ -133,32 +135,6 @@ public partial class DatabaseContext : DbContext
         return data;
     }
 
-    // Fetch All Users
-    //public async Task<List<User>> GetUsersAsync()
-    //{
-    //    return await Users.ToListAsync();
-    //}
-
-    //// Add User
-    //public async Task AddUserAsync(User user)
-    //{
-    //    Users.Add(user);
-    //    await SaveChangesAsync();
-    //}
-
-    //// Update User
-    //public async Task UpdateUserAsync(User user)
-    //{
-    //    Users.Update(user);
-    //    await SaveChangesAsync();
-    //}
-
-    //// Delete User
-    //public async Task DeleteUserAsync(User user)
-    //{
-    //    Users.Remove(user);
-    //    await SaveChangesAsync();
-    //}
 
     public async Task CreateOrUpdateUserWithProfileAsync(User user, UserProfile userProfile)
     {
@@ -216,19 +192,25 @@ public partial class DatabaseContext : DbContext
 
     private void ApplyTimestamps()
     {
-        var entries = ChangeTracker.Entries<User>();
+        var entries = ChangeTracker.Entries<IAuditable>();
 
         foreach (var entry in entries)
         {
             if (entry.State == EntityState.Added)   // New row → Set CreatedDateTime
             {
+                entry.Property(u => u.CreatedBy).CurrentValue = "TestUser";
                 entry.Property(u => u.CreatedDateTime).CurrentValue = DateTime.UtcNow;
-                entry.Property(u => u.UpdateDateTime).CurrentValue = DateTime.UtcNow;
+                entry.Property(u => u.UpdatedBy).CurrentValue = "TestUser";
+                entry.Property(u => u.UpdatedDateTime).CurrentValue = DateTime.UtcNow;
+
             }
             else if (entry.State == EntityState.Modified) // Update row → Update UpdateDateTime
             {
-                entry.Property(u => u.UpdateDateTime).CurrentValue = DateTime.UtcNow;
+                entry.Property(u => u.UpdatedBy).CurrentValue = "TestUser";
+                entry.Property(u => u.UpdatedDateTime).CurrentValue = DateTime.UtcNow;
             }
         }
+
+
     }
 }

@@ -52,7 +52,7 @@ public partial class LoggingService : IDisposable
 
         System.Diagnostics.Debug.WriteLine("ProcessLogQueue task started.");
 
-        TestLogging();
+        //TestLogging();
 
     }
 
