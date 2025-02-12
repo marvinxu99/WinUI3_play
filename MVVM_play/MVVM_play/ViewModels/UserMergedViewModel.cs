@@ -61,6 +61,8 @@ public partial class UserMergedViewModel : ObservableObject
 
         //LoadUsersWithProfilesAsync().ConfigureAwait(false);
         _ = LoadUsersWithProfilesAsync();
+
+        Debug.WriteLine($"UserViewModel Constructor just run...");
     }
 
     public async Task LoadUsersWithProfilesAsync()

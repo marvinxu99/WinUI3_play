@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Data;
 using System;
 
-namespace MVVM_play.Helpers;
+namespace MVVM_play.Converters;
 
 internal partial class UtcToLocalConverter : IValueConverter
 {

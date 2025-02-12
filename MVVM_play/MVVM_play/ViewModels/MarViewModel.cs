@@ -1,99 +1,108 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace MVVM_play.ViewModels;
 
-internal class MarTask
+public partial class MarViewModel : ObservableObject
 {
-    public string Name { get; set; }
-    public string TaskTime { get; set; }
-
-    public MarTask(string name, string taskTime)
+    private int _patientId;
+    public int PatientId
     {
-        Name = name;
-        TaskTime = taskTime;
-    }
-}
-
-internal class MarResult
-{
-    public string Name { get; set; }
-    public string ResultTime { get; set; }
-
-    public MarResult(string name, string resultTime)
-    {
-        Name = name;
-        ResultTime = resultTime;
-    }
-}
-
-internal class MarRowItem
-{
-    public string OrderName { get; set; }
-    public int OrderType { get; }
-    public List<MarTask>? Tasks { get; set; }
-    public List<MarResult>? Results { get; set; }
-
-    public MarRowItem(string orderName, int orderType)
-    {
-        OrderType = orderType;
-        OrderName = orderName;
-    }
-}
-
-internal partial class MarViewModel : ObservableObject
-{
-    private MarRowItem? _selectedMarRow;
-
-    public ObservableCollection<MarRowItem>? MarRows { get; set; }
-
-    public MarRowItem? SelectedMarRow
-    {
-        get => _selectedMarRow;
-        set => SetProperty(ref _selectedMarRow, value);
+        get => _patientId;
+        set => SetProperty(ref _patientId, value);
     }
 
+    private string _patientName;
+    public string PatientName
+    {
+        get => _patientName;
+        set => SetProperty(ref _patientName, value);
+    }
 
-    public RelayCommand RefreshMarCommand { get; }
+    private DateTime _dateOfBirth;
+    public DateTime DateOfBirth
+    {
+        get => _dateOfBirth;
+        set => SetProperty(ref _dateOfBirth, value);
+    }
 
+    private string _roomNumber;
+    public string RoomNumber
+    {
+        get => _roomNumber;
+        set => SetProperty(ref _roomNumber, value);
+    }
+
+    private string _allergies;
+    public string Allergies
+    {
+        get => _allergies;
+        set => SetProperty(ref _allergies, value);
+    }
+
+    private MedRecordViewModel? _selectedMedication;
+    public MedRecordViewModel? SelectedMedication
+    {
+        get => _selectedMedication;
+        set => SetProperty(ref _selectedMedication, value);
+    }
+
+    public ObservableCollection<MedRecordViewModel> Medications { get; }
+
+    public IRelayCommand AddAdminRecordCommand { get; }
 
     public MarViewModel()
     {
-        // Sample data
-        MarRows = new ObservableCollection<MarRowItem>
+        Medications = new ObservableCollection<MedRecordViewModel>();
+        AddAdminRecordCommand = new RelayCommand(AddAdminRecord);
+        LoadMockData();
+    }
+
+    private void LoadMockData()
+    {
+        PatientId = 1;
+        PatientName = "John Doe";
+        DateOfBirth = new DateTime(1990, 5, 14);
+        RoomNumber = "101B";
+        Allergies = "Penicillin";
+
+        var medication = new MedRecordViewModel
         {
-            new("Order1", 1),
-            new("Order2", 1),
-            new("Order3", 2),
-            new("Order4", 2),
-            new("Order5", 3),
-            new("Order6", 3),
-            new("Order7", 3),
+            MedicationId = 1,
+            MedicationName = "Ibuprofen",
+            Dosage = "200mg",
+            Route = "Oral",
+            Frequency = "BID",
+            Status = "Scheduled"
         };
 
-        RefreshMarCommand = new RelayCommand(RefreshMar);
+        medication.AdminRecords.Add(new AdminRecordViewModel
+        {
+            AdminRecordId = 1,
+            AdministrationTime = DateTime.Now.AddHours(-2),
+            AdministeredBy = "Nurse Jane",
+            Notes = "Taken with water",
+            WasAdministered = true
+        });
 
+        Medications.Add(medication);
+        SelectedMedication = medication;
     }
 
-    private void RefreshMar()
+    private void AddAdminRecord()
     {
-        Debug.WriteLine($"RefreshMar()");
+        if (SelectedMedication != null)
+        {
+            SelectedMedication.AdminRecords.Add(new AdminRecordViewModel
+            {
+                AdminRecordId = SelectedMedication.AdminRecords.Count + 1,
+                AdministrationTime = DateTime.Now,
+                AdministeredBy = "Nurse Smith",
+                Notes = "Given as per schedule",
+                WasAdministered = true
+            });
+        }
     }
-
-    public void MarGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        Debug.WriteLine("Selected Changed");
-    }
-
-    public void MarGrid_KeyDown(object sender, KeyRoutedEventArgs e)
-    {
-        Debug.WriteLine("key pressed!");
-    }
-
-
 }

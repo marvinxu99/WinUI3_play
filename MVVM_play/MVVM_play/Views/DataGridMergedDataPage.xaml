@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:MVVM_play.Views"
-    xmlns:helper="using:MVVM_play.Helpers"
+    xmlns:helper="using:MVVM_play.Converters"
     xmlns:vm="using:MVVM_play.ViewModels"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
