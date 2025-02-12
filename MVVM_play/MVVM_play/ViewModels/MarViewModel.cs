@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.ObjectModel;
 
@@ -42,22 +41,58 @@ public partial class MarViewModel : ObservableObject
         set => SetProperty(ref _allergies, value);
     }
 
-    private MedRecordViewModel? _selectedMedication;
-    public MedRecordViewModel? SelectedMedication
+    // Filters - Use manual properties for WinRT compatibility
+    private bool _showScheduled = true;
+    public bool ShowScheduled
     {
-        get => _selectedMedication;
-        set => SetProperty(ref _selectedMedication, value);
+        get => _showScheduled;
+        set => SetProperty(ref _showScheduled, value);
     }
 
-    public ObservableCollection<MedRecordViewModel> Medications { get; }
+    private bool _showPRN = true;
+    public bool ShowPRN
+    {
+        get => _showPRN;
+        set => SetProperty(ref _showPRN, value);
+    }
 
-    public IRelayCommand AddAdminRecordCommand { get; }
+    private bool _showContinuous = true;
+    public bool ShowContinuous
+    {
+        get => _showContinuous;
+        set => SetProperty(ref _showContinuous, value);
+    }
+
+    private bool _showFuture = true;
+    public bool ShowFuture
+    {
+        get => _showFuture;
+        set => SetProperty(ref _showFuture, value);
+    }
+
+    private bool _showDiscontinued = false;
+    public bool ShowDiscontinued
+    {
+        get => _showDiscontinued;
+        set => SetProperty(ref _showDiscontinued, value);
+    }
+
+    public ObservableCollection<MedRecordViewModel> Medications { get; } = new();
+    public ObservableCollection<string> TimeSlots { get; } = new();
 
     public MarViewModel()
     {
-        Medications = new ObservableCollection<MedRecordViewModel>();
-        AddAdminRecordCommand = new RelayCommand(AddAdminRecord);
         LoadMockData();
+        GenerateTimeSlots();
+    }
+
+    private void GenerateTimeSlots()
+    {
+        DateTime startTime = DateTime.Now.AddDays(-1);
+        for (int i = 0; i < 10; i++)
+        {
+            TimeSlots.Add(startTime.AddHours(i * 4).ToString("dd-MMM HH:mm"));
+        }
     }
 
     private void LoadMockData()
@@ -68,41 +103,51 @@ public partial class MarViewModel : ObservableObject
         RoomNumber = "101B";
         Allergies = "Penicillin";
 
-        var medication = new MedRecordViewModel
+        Medications.Add(new MedRecordViewModel
         {
             MedicationId = 1,
             MedicationName = "Ibuprofen",
             Dosage = "200mg",
             Route = "Oral",
             Frequency = "BID",
-            Status = "Scheduled"
-        };
-
-        medication.AdminRecords.Add(new AdminRecordViewModel
+            Status = "Scheduled",
+            AdminRecords = new ObservableCollection<AdminRecordViewModel>
         {
-            AdminRecordId = 1,
-            AdministrationTime = DateTime.Now.AddHours(-2),
-            AdministeredBy = "Nurse Jane",
-            Notes = "Taken with water",
-            WasAdministered = true
+            new AdminRecordViewModel { AdminRecordId = 1, AdministrationTime = DateTime.Now.AddHours(-6), AdministeredBy = "Nurse Jane", Notes = "Taken with water", WasAdministered = true },
+            new AdminRecordViewModel { AdminRecordId = 2, AdministrationTime = DateTime.Now.AddHours(-2), AdministeredBy = "", Notes = "", WasAdministered = false }, // Missed dose
+            new AdminRecordViewModel { AdminRecordId = 3, AdministrationTime = DateTime.Now.AddHours(2), AdministeredBy = "", Notes = "", WasAdministered = false } // Upcoming
+        }
         });
 
-        Medications.Add(medication);
-        SelectedMedication = medication;
-    }
-
-    private void AddAdminRecord()
-    {
-        if (SelectedMedication != null)
+        Medications.Add(new MedRecordViewModel
         {
-            SelectedMedication.AdminRecords.Add(new AdminRecordViewModel
-            {
-                AdminRecordId = SelectedMedication.AdminRecords.Count + 1,
-                AdministrationTime = DateTime.Now,
-                AdministeredBy = "Nurse Smith",
-                Notes = "Given as per schedule",
-                WasAdministered = true
-            });
+            MedicationId = 2,
+            MedicationName = "Amoxicillin",
+            Dosage = "500mg",
+            Route = "Oral",
+            Frequency = "TID",
+            Status = "Scheduled",
+            AdminRecords = new ObservableCollection<AdminRecordViewModel>
+        {
+            new AdminRecordViewModel { AdminRecordId = 4, AdministrationTime = DateTime.Now.AddHours(-8), AdministeredBy = "Nurse Paul", Notes = "Taken with food", WasAdministered = true },
+            new AdminRecordViewModel { AdminRecordId = 5, AdministrationTime = DateTime.Now.AddHours(-4), AdministeredBy = "Nurse Paul", Notes = "Taken", WasAdministered = true },
+            new AdminRecordViewModel { AdminRecordId = 6, AdministrationTime = DateTime.Now.AddHours(4), AdministeredBy = "", Notes = "", WasAdministered = false } // Pending
         }
+        });
+
+        Medications.Add(new MedRecordViewModel
+        {
+            MedicationId = 3,
+            MedicationName = "Insulin",
+            Dosage = "10 units",
+            Route = "Subcutaneous",
+            Frequency = "AC Meals",
+            Status = "PRN",
+            AdminRecords = new ObservableCollection<AdminRecordViewModel>
+        {
+            new AdminRecordViewModel { AdminRecordId = 7, AdministrationTime = DateTime.Now.AddHours(-3), AdministeredBy = "Nurse Sarah", Notes = "Pre-breakfast", WasAdministered = true },
+            new AdminRecordViewModel { AdminRecordId = 8, AdministrationTime = DateTime.Now.AddHours(1), AdministeredBy = "", Notes = "", WasAdministered = false } // Upcoming
+        }
+        });
     }
 }

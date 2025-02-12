@@ -6,6 +6,7 @@ using MVVM_play.Services;
 using MVVM_play.ViewModels;
 using MVVM_play.Views;
 using System;
+using System.Diagnostics;
 using System.IO;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -112,19 +113,21 @@ public partial class App : Application
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
         m_window = new MainWindow();
-        //UnhandledException += App_UnhandledException;
+
+        UnhandledException += App_UnhandledException;
+
         m_window.Activate();
     }
 
-    //private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
-    //{
-    //    Debug.WriteLine($"Unhandled exception occurred: {e.Exception}");
-    //    Debug.WriteLine($"Message: {e.Message}");
-    //    Debug.WriteLine($"StackTrace: {e.Exception?.StackTrace}");
+    private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    {
+        Debug.WriteLine($"Unhandled exception occurred: {e.Exception}");
+        Debug.WriteLine($"Message: {e.Message}");
+        Debug.WriteLine($"StackTrace: {e.Exception?.StackTrace}");
 
-    //    // Prevent the app from crashing if appropriate
-    //    e.Handled = true;
-    //}
+        // Prevent the app from crashing if appropriate
+        e.Handled = true;
+    }
 
 
 }

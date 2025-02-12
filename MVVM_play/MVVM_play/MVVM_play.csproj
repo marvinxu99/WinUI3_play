@@ -18,6 +18,7 @@
     <Compile Remove="SettingsPage.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Controls\AdminRecordCell.xaml" />
     <None Remove="Views\DataGridMergedDataPage.xaml" />
     <None Remove="Views\DataGridWithCrudPage.xaml" />
     <None Remove="Views\DynamicDataGrid2Page.xaml" />
@@ -133,6 +134,11 @@
   <ItemGroup>
     <Folder Include="Constants\" />
     <Folder Include="Context\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Controls\AdminRecordCell.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!--
