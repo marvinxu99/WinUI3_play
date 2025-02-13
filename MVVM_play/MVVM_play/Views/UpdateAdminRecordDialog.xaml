@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="MVVM_play.Views.UpdateAdminRecordDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Update Administration Details"
+    PrimaryButtonText="OK"
+    SecondaryButtonText="Cancel"
+    RequestedTheme="Light">
+    <StackPanel Spacing="12">
+        <DatePicker x:Name="AdminTimePicker" x:FieldModifier="public" Header="Administration Time"/>
+        <TextBox x:Name="ActualDoseTextBox" x:FieldModifier="public" Header="Actual Dose" PlaceholderText="Enter dose"/>
+        <TextBox x:Name="NurseNameTextBox" x:FieldModifier="public" Header="Nurse Name" PlaceholderText="Enter nurse name"/>
+    </StackPanel>
+</ContentDialog>

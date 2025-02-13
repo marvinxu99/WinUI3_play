@@ -1,6 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
 
 namespace MVVM_play.ViewModels;
 
@@ -88,10 +91,30 @@ public partial class MarViewModel : ObservableObject
 
     private void GenerateTimeSlots()
     {
-        DateTime startTime = DateTime.Now.AddDays(-1);
-        for (int i = 0; i < 10; i++)
+        // Use a HashSet to collect unique time slot strings from all admin records.
+        var timeSlotSet = new HashSet<string>();
+
+        foreach (var med in Medications)
         {
-            TimeSlots.Add(startTime.AddHours(i * 4).ToString("dd-MMM HH:mm"));
+            foreach (var record in med.AdminRecords)
+            {
+                // Format each administration time as "dd-MMM HH:mm".
+                string slot = record.AdministrationTime.ToString("dd-MMM HH:mm", CultureInfo.InvariantCulture);
+                timeSlotSet.Add(slot);
+            }
+        }
+
+        // Order the time slots reverse-chronologically.
+        var orderedSlots = timeSlotSet
+            .Select(ts => DateTime.ParseExact(ts, "dd-MMM HH:mm", CultureInfo.InvariantCulture))
+            .OrderByDescending(dt => dt)
+            .Select(dt => dt.ToString("dd-MMM HH:mm"));
+
+        // Clear any existing slots and add the new ones.
+        TimeSlots.Clear();
+        foreach (var slot in orderedSlots)
+        {
+            TimeSlots.Add(slot);
         }
     }
 
@@ -115,7 +138,9 @@ public partial class MarViewModel : ObservableObject
         {
             new AdminRecordViewModel { AdminRecordId = 1, AdministrationTime = DateTime.Now.AddHours(-6), AdministeredBy = "Nurse Jane", Notes = "Taken with water", WasAdministered = true },
             new AdminRecordViewModel { AdminRecordId = 2, AdministrationTime = DateTime.Now.AddHours(-2), AdministeredBy = "", Notes = "", WasAdministered = false }, // Missed dose
-            new AdminRecordViewModel { AdminRecordId = 3, AdministrationTime = DateTime.Now.AddHours(2), AdministeredBy = "", Notes = "", WasAdministered = false } // Upcoming
+            new AdminRecordViewModel { AdminRecordId = 3, AdministrationTime = DateTime.Now.AddHours(2), AdministeredBy = "", Notes = "", WasAdministered = false }, // Upcoming
+            new AdminRecordViewModel { AdminRecordId = 3, AdministrationTime = DateTime.Now.AddHours(4), AdministeredBy = "", Notes = "", WasAdministered = false }, // Upcoming
+            new AdminRecordViewModel { AdminRecordId = 3, AdministrationTime = DateTime.Now.AddHours(6), AdministeredBy = "", Notes = "", WasAdministered = false }, // Upcoming
         }
         });
 
@@ -131,7 +156,8 @@ public partial class MarViewModel : ObservableObject
         {
             new AdminRecordViewModel { AdminRecordId = 4, AdministrationTime = DateTime.Now.AddHours(-8), AdministeredBy = "Nurse Paul", Notes = "Taken with food", WasAdministered = true },
             new AdminRecordViewModel { AdminRecordId = 5, AdministrationTime = DateTime.Now.AddHours(-4), AdministeredBy = "Nurse Paul", Notes = "Taken", WasAdministered = true },
-            new AdminRecordViewModel { AdminRecordId = 6, AdministrationTime = DateTime.Now.AddHours(4), AdministeredBy = "", Notes = "", WasAdministered = false } // Pending
+            new AdminRecordViewModel { AdminRecordId = 6, AdministrationTime = DateTime.Now.AddHours(4), AdministeredBy = "", Notes = "", WasAdministered = false }, // Pending
+            new AdminRecordViewModel { AdminRecordId = 6, AdministrationTime = DateTime.Now.AddHours(8), AdministeredBy = "", Notes = "", WasAdministered = false }, // Pending
         }
         });
 

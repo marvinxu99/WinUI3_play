@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -59,4 +60,25 @@ public partial class MedRecordViewModel : ObservableObject
     // Indexer: given a time-slot string, return the matching AdminRecordViewModel (or null)
     public AdminRecordViewModel? this[string timeSlot] => AdminRecords.FirstOrDefault(r =>
             r.AdministrationTime.ToString("dd-MMM HH:mm", CultureInfo.InvariantCulture) == timeSlot);
+
+    // Returns the pending admin record.
+    public AdminRecordViewModel? PendingAdminRecord
+    {
+        get
+        {
+            // First try to get an upcoming (future) pending record.
+            var upcoming = AdminRecords
+                .Where(r => !r.WasAdministered && r.AdministrationTime >= DateTime.Now)
+                .OrderBy(r => r.AdministrationTime)
+                .FirstOrDefault();
+            if (upcoming != null)
+                return upcoming;
+
+            // Otherwise, return the most recent past pending record.
+            return AdminRecords
+                .Where(r => !r.WasAdministered)
+                .OrderByDescending(r => r.AdministrationTime)
+                .FirstOrDefault();
+        }
+    }
 }

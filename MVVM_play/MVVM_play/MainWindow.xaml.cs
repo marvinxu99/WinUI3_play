@@ -1,8 +1,5 @@
-using Microsoft.UI;
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using MVVM_play.ViewModels;
-using System;
 
 namespace MVVM_play;
 
@@ -23,12 +20,12 @@ public sealed partial class MainWindow : Window
         RootGrid.DataContext = ViewModel;
 
         // Get the AppWindow for controlling window size
-        IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-        WindowId myWndId = Win32Interop.GetWindowIdFromWindow(hWnd);
-        if (AppWindow.GetFromWindowId(myWndId).Presenter is OverlappedPresenter presenter)
-        {
-            presenter.Maximize();
-        }
+        //IntPtr hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+        //WindowId myWndId = Win32Interop.GetWindowIdFromWindow(hWnd);
+        //if (AppWindow.GetFromWindowId(myWndId).Presenter is OverlappedPresenter presenter)
+        //{
+        //    presenter.Maximize();
+        //}
 
     }
 }

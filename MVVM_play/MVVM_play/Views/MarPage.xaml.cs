@@ -22,29 +22,6 @@ namespace MVVM_play.Views
 
         private void AddTimeSlotColumns()
         {
-            //if (DataContext is not MarViewModel viewModel) return;
-
-            //// Ensure dynamic columns are only added once
-            //if (MarDataGrid.Columns.Count > 2) return;
-
-            //// Ensure the template exists before using it
-            //if (!Resources.ContainsKey("AdminRecordTemplate"))
-            //{
-            //    throw new Exception("AdminRecordTemplate resource is missing. Ensure it's defined in Page.Resources.");
-            //}
-
-            //foreach (var timeSlot in viewModel.TimeSlots)
-            //{
-            //    var column = new DataGridTemplateColumn
-            //    {
-            //        Header = timeSlot,
-            //        Width = new DataGridLength(100),
-            //        CellTemplate = (DataTemplate)Resources["AdminRecordTemplate"]
-            //    };
-
-            //    MarDataGrid.Columns.Add(column);
-            //}
-
             if (DataContext is not MarViewModel viewModel) return;
 
             // Prevent re-adding columns (assuming static columns already exist)
@@ -55,7 +32,7 @@ namespace MVVM_play.Views
                 var column = new DataGridTemplateColumn
                 {
                     Header = timeSlot,
-                    Width = new DataGridLength(100),
+                    Width = new DataGridLength(110),
                     CellTemplate = CreateAdminRecordCellTemplate(timeSlot)
                 };
 

@@ -15,7 +15,7 @@ namespace MVVM_play.Converters
             return new SolidColorBrush(Microsoft.UI.Colors.Gray);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        public object? ConvertBack(object value, Type targetType, object parameter, string language)
         {
             return null; // No need for two-way binding
         }

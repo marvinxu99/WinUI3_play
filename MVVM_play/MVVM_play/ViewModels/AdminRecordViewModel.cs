@@ -19,15 +19,15 @@ public partial class AdminRecordViewModel : ObservableObject
         set => SetProperty(ref _administrationTime, value);
     }
 
-    private string _administeredBy;
+    private string? _administeredBy;
     public string AdministeredBy
     {
         get => _administeredBy;
         set => SetProperty(ref _administeredBy, value);
     }
 
-    private string _notes;
-    public string Notes
+    private string? _notes;
+    public string? Notes
     {
         get => _notes;
         set => SetProperty(ref _notes, value);
@@ -38,5 +38,13 @@ public partial class AdminRecordViewModel : ObservableObject
     {
         get => _wasAdministered;
         set => SetProperty(ref _wasAdministered, value);
+    }
+
+    // New property for the actual dose
+    private string? _actualDose;
+    public string? ActualDose
+    {
+        get => _actualDose;
+        set => SetProperty(ref _actualDose, value);
     }
 }
