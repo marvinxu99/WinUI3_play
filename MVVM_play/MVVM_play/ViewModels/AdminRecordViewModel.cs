@@ -20,7 +20,7 @@ public partial class AdminRecordViewModel : ObservableObject
     }
 
     private string? _administeredBy;
-    public string AdministeredBy
+    public string? AdministeredBy
     {
         get => _administeredBy;
         set => SetProperty(ref _administeredBy, value);

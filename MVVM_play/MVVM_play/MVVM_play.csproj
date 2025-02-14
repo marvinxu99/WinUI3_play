@@ -18,7 +18,6 @@
     <Compile Remove="SettingsPage.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Controls\AdminRecordCell.xaml" />
     <None Remove="Views\DataGridMergedDataPage.xaml" />
     <None Remove="Views\DataGridWithCrudPage.xaml" />
     <None Remove="Views\DynamicDataGrid2Page.xaml" />

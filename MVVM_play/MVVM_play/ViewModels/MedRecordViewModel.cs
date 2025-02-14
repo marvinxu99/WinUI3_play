@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -50,34 +51,47 @@ public partial class MedRecordViewModel : ObservableObject
         set => SetProperty(ref _status, value);
     }
 
-    public ObservableCollection<AdminRecordViewModel> AdminRecords { get; set; }
+    public ObservableCollection<AdminResultViewModel> AdminResults { get; set; }
+    public ObservableCollection<AdminTaskViewModel> AdminTasks { get; set; }
 
     public MedRecordViewModel()
     {
-        AdminRecords = [];
+        AdminResults = [];
+        AdminTasks = [];
     }
 
-    // Indexer: given a time-slot string, return the matching AdminRecordViewModel (or null)
-    public AdminRecordViewModel? this[string timeSlot] => AdminRecords.FirstOrDefault(r =>
-            r.AdministrationTime.ToString("dd-MMM HH:mm", CultureInfo.InvariantCulture) == timeSlot);
+    // Combined enumerable of all admin entries (both results and tasks).
+    public IEnumerable<IMedAdminEntry> AdminEntries =>
+        (AdminResults ?? Enumerable.Empty<AdminResultViewModel>()).Cast<IMedAdminEntry>()
+        .Concat(AdminTasks ?? Enumerable.Empty<AdminTaskViewModel>());
 
-    // Returns the pending admin record.
-    public AdminRecordViewModel? PendingAdminRecord
+
+    // Indexer: given a time-slot string, return the matching admin entry (or null).
+    public IMedAdminEntry? this[string timeSlot] =>
+            AdminEntries.FirstOrDefault(r => r.ScheduledTime.HasValue &&
+            r.ScheduledTime.Value.ToString("dd-MMM HH:mm", CultureInfo.InvariantCulture) == timeSlot);
+
+
+    // Returns the pending admin entry from AdminTaskViewModel only.
+    public IMedAdminEntry? PendingAdminEntry
     {
         get
         {
-            // First try to get an upcoming (future) pending record.
-            var upcoming = AdminRecords
-                .Where(r => !r.WasAdministered && r.AdministrationTime >= DateTime.Now)
-                .OrderBy(r => r.AdministrationTime)
+            // Only consider entries from AdminTaskViewModel as pending.
+            var pendingEntries = AdminTasks;
+
+            // Get the upcoming pending entry (scheduled for the future).
+            var upcoming = pendingEntries
+                .Where(r => r.ScheduledTime.HasValue && r.ScheduledTime.Value >= DateTime.Now)
+                .OrderBy(r => r.ScheduledTime)
                 .FirstOrDefault();
             if (upcoming != null)
                 return upcoming;
 
-            // Otherwise, return the most recent past pending record.
-            return AdminRecords
-                .Where(r => !r.WasAdministered)
-                .OrderByDescending(r => r.AdministrationTime)
+            // Otherwise, return the most recent past pending entry.
+            return pendingEntries
+                .Where(r => r.ScheduledTime.HasValue && r.ScheduledTime.Value < DateTime.Now)
+                .OrderByDescending(r => r.ScheduledTime)
                 .FirstOrDefault();
         }
     }

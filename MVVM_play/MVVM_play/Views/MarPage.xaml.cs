@@ -22,10 +22,12 @@ namespace MVVM_play.Views
 
         private void AddTimeSlotColumns()
         {
-            if (DataContext is not MarViewModel viewModel) return;
+            if (DataContext is not MarViewModel viewModel)
+                return;
 
             // Prevent re-adding columns (assuming static columns already exist)
-            if (MarDataGrid.Columns.Count > 2) return;
+            if (MarDataGrid.Columns.Count > 2)
+                return;
 
             foreach (var timeSlot in viewModel.TimeSlots)
             {
@@ -47,7 +49,7 @@ namespace MVVM_play.Views
                 <DataTemplate 
                     xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                     xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                    xmlns:local='using:MVVM_play.Views'>
+                    xmlns:local='using:MVVM_play.Controls'>
                     <local:AdminRecordCell TimeSlot='{timeSlot}'/>
                 </DataTemplate>";
 
