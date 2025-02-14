@@ -141,13 +141,16 @@ public partial class MarViewModel : ObservableObject
             Status = "Scheduled",
             AdminResults = new ObservableCollection<AdminResultViewModel>
                 {
-                    new AdminResultViewModel { AdminRecordId = 1, AdministrationTime = DateTime.Now.AddHours(-6), AdministeredBy = "Nurse Jane", Notes = "Taken with water", ScheduledTime = DateTime.Now.AddHours(-6), Dose = "200mg" },
-                    new AdminResultViewModel { AdminRecordId = 2, AdministrationTime = DateTime.Now.AddHours(-2), AdministeredBy = "", Notes = "", ScheduledTime = DateTime.Now.AddHours(-2), Dose = "200mg" },
-                    new AdminResultViewModel { AdminRecordId = 3, AdministrationTime = DateTime.Now.AddHours(2), AdministeredBy = "", Notes = "", ScheduledTime = DateTime.Now.AddHours(2), Dose = "200mg" },
-                    new AdminResultViewModel { AdminRecordId = 4, AdministrationTime = DateTime.Now.AddHours(4), AdministeredBy = "", Notes = "", ScheduledTime = DateTime.Now.AddHours(4), Dose = "200mg" },
-                    new AdminResultViewModel { AdminRecordId = 5, AdministrationTime = DateTime.Now.AddHours(6), AdministeredBy = "", Notes = "", ScheduledTime = DateTime.Now.AddHours(6), Dose = "200mg" }
+                    new AdminResultViewModel { AdminRecordId = 1, AdministrationTime = DateTime.Now.AddHours(-6), AdministeredBy = "Nurse Jane", Notes = "", ScheduledTime = DateTime.Now.AddHours(-6), ActualDose = "100mg" },
+
+                    new AdminResultViewModel { AdminRecordId = 2, AdministrationTime = DateTime.Now.AddHours(-2), AdministeredBy = "", Notes = "", ScheduledTime = DateTime.Now.AddHours(-2), ActualDose = "200mg" },
                 },
-            AdminTasks = new ObservableCollection<AdminTaskViewModel>()
+            AdminTasks = new ObservableCollection<AdminTaskViewModel>
+            {
+                new AdminTaskViewModel { MedicationId = 1, ScheduledTime = RoundToNearestHalfHour(DateTime.Now.AddHours(2)), Dose = "200mg", Notes = "Undocumented med task" },
+                new AdminTaskViewModel { MedicationId = 1, ScheduledTime = RoundToNearestHalfHour(DateTime.Now.AddHours(8)), Dose = "200mg", Notes = "Undocumented med task" },
+                new AdminTaskViewModel { MedicationId = 1, ScheduledTime = RoundToNearestHalfHour(DateTime.Now.AddHours(14)), Dose = "200mg", Notes = "Undocumented med task" },
+            }
         });
 
         // Medication 2: Amoxicillin with both documented results and pending tasks.
@@ -161,9 +164,9 @@ public partial class MarViewModel : ObservableObject
             Status = "Scheduled",
             AdminResults = new ObservableCollection<AdminResultViewModel>
                 {
-                    new AdminResultViewModel { AdminRecordId = 6, AdministrationTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-8)), AdministeredBy = "Nurse Paul", Notes = "Taken with food", ScheduledTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-8)), Dose = "500mg" },
-                    new AdminResultViewModel { AdminRecordId = 7, AdministrationTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-4)), AdministeredBy = "Nurse Paul", Notes = "Taken", ScheduledTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-4)), Dose = "500mg" },
-                    new AdminResultViewModel { AdminRecordId = 8, AdministrationTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-1)), AdministeredBy = "", Notes = "Taken", ScheduledTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-1)), Dose = "500mg" }
+                    new AdminResultViewModel { AdminRecordId = 6, AdministrationTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-8)), AdministeredBy = "Nurse Paul", Notes = "Taken with food", ScheduledTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-8)), ActualDose = "500mg" },
+                    new AdminResultViewModel { AdminRecordId = 7, AdministrationTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-4)), AdministeredBy = "Nurse Paul", Notes = "Taken", ScheduledTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-4)), ActualDose = "500mg" },
+                    new AdminResultViewModel { AdminRecordId = 8, AdministrationTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-1)), AdministeredBy = "", Notes = "Taken", ScheduledTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-1)), ActualDose = "500mg" }
                 },
             AdminTasks = new ObservableCollection<AdminTaskViewModel>
                 {
@@ -184,11 +187,13 @@ public partial class MarViewModel : ObservableObject
             Status = "PRN",
             AdminResults = new ObservableCollection<AdminResultViewModel>
                 {
-                    new AdminResultViewModel { AdminRecordId = 9, AdministrationTime = DateTime.Now.AddHours(-3), AdministeredBy = "Nurse Sarah", Notes = "Pre-breakfast", ScheduledTime = DateTime.Now.AddHours(-3), Dose = "10 units" },
-                    new AdminResultViewModel { AdminRecordId = 10, AdministrationTime = DateTime.Now.AddHours(1), AdministeredBy = "", Notes = "", ScheduledTime = DateTime.Now.AddHours(1), Dose = "10 units" }
+                    new AdminResultViewModel { AdminRecordId = 9, AdministrationTime = DateTime.Now.AddHours(-6), AdministeredBy = "Nurse Sarah", Notes = "Pre-breakfast", ScheduledTime = DateTime.Now.AddHours(-6), ActualDose = "10 units" },
+
+                new AdminResultViewModel { AdminRecordId = 10, AdministrationTime = DateTime.Now.AddHours(-3), AdministeredBy = "", Notes = "", ScheduledTime = DateTime.Now.AddHours(-3), ActualDose = "10 units" }
                 },
             AdminTasks = new ObservableCollection<AdminTaskViewModel>
             {
+                    new AdminTaskViewModel { MedicationId = 3, ScheduledTime = RoundToNearestHalfHour(DateTime.Now.AddHours(-2)), Dose = "10 units", Notes = "Undocumented med task" },
                     new AdminTaskViewModel { MedicationId = 3, ScheduledTime = RoundToNearestHalfHour(DateTime.Now.AddHours(6)), Dose = "10 units", Notes = "Undocumented med task" }
             }
         });

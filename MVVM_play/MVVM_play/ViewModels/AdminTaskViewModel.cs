@@ -17,6 +17,8 @@ namespace MVVM_play.ViewModels
             set => SetProperty(ref _notes, value);
         }
 
+        public bool IsMedResult { get; } = false;
+
     }
 
 

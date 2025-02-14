@@ -46,5 +46,7 @@ namespace MVVM_play.ViewModels
             get => _actualDose;
             set => SetProperty(ref _actualDose, value);
         }
+
+        public bool IsMedResult { get; } = true;
     }
 }

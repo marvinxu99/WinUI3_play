@@ -15,14 +15,16 @@
         <converters:AdminStatusColorConverter x:Key="AdminStatusColorConverter"/>
         <converters:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
         
+        <!-- SEPARATED TO be AdminRecordCell CONTROL
         <DataTemplate x:Key="AdminRecordTemplate">
             <Border Width="100" Height="40"
-            Background="{Binding WasAdministered, Converter={StaticResource AdminStatusColorConverter}}">
+            Background="{Binding IsMedResult, Converter={StaticResource AdminStatusColorConverter}}">
                 <TextBlock Text="{Binding AdministrationTime, Converter={StaticResource DateTimeToStringConverter}}" 
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/>
             </Border>
         </DataTemplate>
+        -->
     </Page.Resources>
 
     <Grid Padding="10">
@@ -38,14 +40,21 @@
             <controls:DataGrid.Columns>
                 <!-- Medication Column (Includes Name, Dosage, Route, Frequency) -->
                 <controls:DataGridTemplateColumn Header="Medication" Width="300">
+                    <controls:DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="controls:DataGridCell">
+                            <Setter Property="Background" Value="CornflowerBlue"/>
+                        </Style>
+                    </controls:DataGridTemplateColumn.CellStyle>
                     <controls:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock Text="{Binding MedicationName}" FontWeight="Bold" FontSize="14"/>
-                                <TextBlock Text="{Binding Dosage}" FontSize="12"/>
-                                <TextBlock Text="{Binding Route}" FontSize="12"/>
-                                <TextBlock Text="{Binding Frequency}" FontSize="12"/>
-                            </StackPanel>
+                            <Border Padding="10">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="{Binding MedicationName}" FontWeight="Bold" FontSize="14"/>
+                                    <TextBlock Text="{Binding Dosage}" FontSize="12"/>
+                                    <TextBlock Text="{Binding Route}" FontSize="12"/>
+                                    <TextBlock Text="{Binding Frequency}" FontSize="12"/>
+                                </StackPanel>
+                            </Border>
                         </DataTemplate>
                     </controls:DataGridTemplateColumn.CellTemplate>
                 </controls:DataGridTemplateColumn>

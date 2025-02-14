@@ -15,6 +15,7 @@ namespace MVVM_play.Controls
             this.InitializeComponent();
             // Update whenever DataContext changes.
             this.DataContextChanged += AdminRecordCell_DataContextChanged;
+            this.SizeChanged += AdminRecordCell_SizeChanged;
         }
 
         // DependencyProperty to receive the time-slot value.
@@ -37,6 +38,24 @@ namespace MVVM_play.Controls
             UpdateContent();
         }
 
+        private void AdminRecordCell_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // If the current entry is an AdminResultViewModel, update its height to 50% of the cell's new height.
+            if (DataContext is MedRecordViewModel medRecord && !string.IsNullOrEmpty(TimeSlot))
+            {
+                var entry = medRecord[TimeSlot];
+                if (entry is AdminResultViewModel)
+                {
+                    CellBorder.Height = e.NewSize.Height * 0.3;
+                }
+                else if (entry is AdminTaskViewModel)
+                {
+                    // For pending tasks, use 80% of the new height.
+                    CellBorder.Height = e.NewSize.Height * 0.8;
+                }
+            }
+        }
+
         private void UpdateContent()
         {
             // Ensure both DataContext and TimeSlot are set.
@@ -46,38 +65,54 @@ namespace MVVM_play.Controls
                 var entry = medRecord[TimeSlot];
                 if (entry != null)
                 {
-                    // Determine the time to display: if the entry is a documented result, use AdministrationTime;
-                    // otherwise, for a pending task, use ScheduledTime.
-                    DateTime displayTime;
-                    if (entry is AdminResultViewModel result)
-                    {
-                        displayTime = result.AdministrationTime;
-                    }
-                    else if (entry is AdminTaskViewModel task)
-                    {
-                        displayTime = task.ScheduledTime ?? DateTime.MinValue;
-                    }
-                    else
-                    {
-                        displayTime = DateTime.MinValue;
-                    }
-                    TimeTextBlock.Text = displayTime.ToString("dd-MMM HH:mm");
-
-                    // Set background color:
+                    // Set background color & text
                     if (entry is AdminResultViewModel documented)
                     {
+                        // For documented results, position the border at the bottom and fill only 50% of the cell height.
+                        CellBorder.VerticalAlignment = VerticalAlignment.Bottom;
+
+                        // If ActualHeight is available, set height to 50%; otherwise, leave it to SizeChanged to update.
+                        if (this.ActualHeight > 0)
+                        {
+                            CellBorder.Height = this.ActualHeight * 0.3;
+                        }
+
                         CellBorder.Background = new SolidColorBrush(Colors.LightBlue);
+
+                        TimeTextBlock.Text = documented.ActualDose ?? "";
                     }
-                    else if (entry is AdminTaskViewModel)
+                    else if (entry is AdminTaskViewModel adminTask)
                     {
-                        // For pending tasks, use LightGreen.
-                        //CellBorder.Background = new SolidColorBrush(Colors.LightGreen);
+                        // For pending tasks: center-aligned, height 80% of the cell.
+                        CellBorder.VerticalAlignment = VerticalAlignment.Center;
+                        if (this.ActualHeight > 0)
+                        {
+                            CellBorder.Height = this.ActualHeight * 0.8;
+                        }
 
-                        // For undocumented results (if any), show red if the administration time is old, else light gray.
-                        CellBorder.Background = entry.ScheduledTime < DateTime.Now.AddHours(-1)
-                            ? new SolidColorBrush(Colors.Red)
-                            : new SolidColorBrush(Colors.LightGray);
-
+                        // Determine background color:
+                        // 1. Red if the scheduled time is old (< DateTime.Now.AddHours(-1)).
+                        if (adminTask.ScheduledTime.HasValue && adminTask.ScheduledTime.Value < DateTime.Now.AddHours(-1))
+                        {
+                            CellBorder.Background = new SolidColorBrush(Colors.Red);
+                            TimeTextBlock.Text = (adminTask.Dose ?? "") + "\nLast Admin:";
+                        }
+                        else
+                        {
+                            // 2. If this task is the most recent upcoming dose after now, show LightGreen.
+                            var pendingEntry = medRecord.PendingAdminEntry;
+                            if (pendingEntry != null && object.ReferenceEquals(pendingEntry, adminTask))
+                            {
+                                CellBorder.Background = new SolidColorBrush(Colors.LightGreen);
+                                TimeTextBlock.Text = (adminTask.Dose ?? "") + "\nLast Admin:";
+                            }
+                            else
+                            {
+                                // 3. Otherwise, show LightGray.
+                                CellBorder.Background = new SolidColorBrush(Colors.LightGray);
+                                TimeTextBlock.Text = adminTask.Dose ?? "";
+                            }
+                        }
                     }
                 }
                 else
@@ -101,8 +136,12 @@ namespace MVVM_play.Controls
             if (DataContext is MedRecordViewModel medRecord && !string.IsNullOrEmpty(TimeSlot))
             {
                 var entry = medRecord[TimeSlot];
+                var pendingEntry = medRecord.PendingAdminEntry;
                 // Only allow editing for pending tasks.
-                if (entry != null && entry is AdminTaskViewModel pendingTask)
+                if (entry != null &&
+                    entry is AdminTaskViewModel pendingTask &&
+                    (pendingTask.ScheduledTime < DateTime.Now ||
+                        (pendingEntry != null && object.ReferenceEquals(pendingEntry, entry))))
                 {
                     var dialog = new UpdateAdminRecordDialog();
 

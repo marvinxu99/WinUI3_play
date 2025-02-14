@@ -8,9 +8,9 @@ namespace MVVM_play.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (value is bool wasAdministered)
+            if (value is bool IsMedResult)
             {
-                return new SolidColorBrush(wasAdministered ? Microsoft.UI.Colors.Blue : Microsoft.UI.Colors.Red);
+                return new SolidColorBrush(IsMedResult ? Microsoft.UI.Colors.Blue : Microsoft.UI.Colors.Red);
             }
             return new SolidColorBrush(Microsoft.UI.Colors.Gray);
         }

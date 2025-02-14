@@ -6,6 +6,7 @@ namespace MVVM_play.ViewModels
     {
         long MedicationId { get; set; }
         DateTime? ScheduledTime { get; set; }
+        bool IsMedResult { get; }
 
     }
 }

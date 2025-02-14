@@ -6,9 +6,16 @@
     xmlns:local="using:MVVM_play.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch">
 
-    <Border x:Name="CellBorder" Width="100" Height="40" CornerRadius="4" DoubleTapped="CellBorder_DoubleTapped">
+    <!-- The Border will fill its parent; its size/vertical alignment will be adjusted in code-behind -->
+    <Border x:Name="CellBorder" 
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" 
+            CornerRadius="4" 
+            DoubleTapped="CellBorder_DoubleTapped">
         <TextBlock x:Name="TimeTextBlock" 
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"/>
