@@ -30,6 +30,7 @@
     <Grid Padding="10">
         <controls:DataGrid x:Name="MarDataGrid"
                            AutoGenerateColumns="False"
+                           LoadingRowGroup="MarDataGrid_LoadingRowGroup"
                            HeadersVisibility="Column"
                            CanUserSortColumns="True"
                            CanUserReorderColumns="False"
@@ -42,7 +43,7 @@
                 <controls:DataGridTemplateColumn Header="Medication" Width="300">
                     <controls:DataGridTemplateColumn.CellStyle>
                         <Style TargetType="controls:DataGridCell">
-                            <Setter Property="Background" Value="CornflowerBlue"/>
+                            <Setter Property="Background" Value="AliceBlue"/>
                         </Style>
                     </controls:DataGridTemplateColumn.CellStyle>
                     <controls:DataGridTemplateColumn.CellTemplate>

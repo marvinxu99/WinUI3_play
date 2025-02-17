@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 
 namespace MVVM_play.ViewModels;
+
 
 public partial class MarViewModel : ObservableObject
 {
@@ -81,6 +83,7 @@ public partial class MarViewModel : ObservableObject
     }
 
     public ObservableCollection<MedRecordViewModel> Medications { get; } = [];
+
     public ObservableCollection<string> TimeSlots { get; } = [];
 
     public MarViewModel()
@@ -124,6 +127,8 @@ public partial class MarViewModel : ObservableObject
 
     private void LoadMockData()
     {
+        Medications.Clear(); // Prevent duplicates
+
         PatientId = 1;
         PatientName = "John Doe";
         DateOfBirth = new DateTime(1990, 5, 14);
@@ -199,29 +204,61 @@ public partial class MarViewModel : ObservableObject
         });
     }
 
+    public CollectionViewSource GroupedMedications()
+    {
+        //using MountainDbContext dbContext = new();
+        // No ToListAsync() here, since we bail out of Entity Framework to do the Grouping.
+
+        //IEnumerable<GroupInfoCollection<string, MedRecordViewModel>> query = Medications
+        var query = Medications
+                        //.OrderBy(m => m.Status)
+                        .OrderByDescending(m => m.Status)
+                        .GroupBy(m => m.Status, (key, list) => new GroupInfoCollection<string, MedRecordViewModel>(key, list));
+
+        CollectionViewSource groupedItems = new()
+        {
+            IsSourceGrouped = true,
+            Source = query
+        };
+
+        return groupedItems;
+    }
+
+    public class GroupInfoCollection<K, T> : IGrouping<K, T>
+    {
+        private readonly IEnumerable<T> _items;
+
+        public GroupInfoCollection(K key, IEnumerable<T> items)
+        {
+            Key = key;
+            _items = items;
+        }
+
+        public K Key { get; }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return _items.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _items.GetEnumerator();
+        }
+    }
+
     public static DateTime RoundToNearestHalfHour(DateTime dt)
     {
-        // Determine the minute value
         int minutes = dt.Minute;
+        int remainder = minutes % 30;
 
-        // Round down if minutes <15, round to 30 if between 15 and 45, round up if >=45.
-        if (minutes < 15)
-        {
-            minutes = 0;
-        }
-        else if (minutes < 45)
-        {
-            minutes = 30;
-        }
+        // If remainder < 15, round down; otherwise, round up
+        if (remainder < 15)
+            dt = dt.AddMinutes(-remainder);
         else
-        {
-            // When rounding up, add one hour.
-            dt = dt.AddHours(1);
-            minutes = 0;
-        }
+            dt = dt.AddMinutes(30 - remainder);
 
-        // Return a new DateTime with the rounded minutes and zeroed seconds/milliseconds.
-        return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, minutes, 0, dt.Kind);
+        return new DateTime(dt.Year, dt.Month, dt.Day, dt.Hour, dt.Minute, 0, dt.Kind);
     }
 
 }

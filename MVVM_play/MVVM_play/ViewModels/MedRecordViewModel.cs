@@ -44,7 +44,7 @@ public partial class MedRecordViewModel : ObservableObject
         set => SetProperty(ref _frequency, value);
     }
 
-    private string _status = null!;
+    private string _status = null!;   // Scheduled, PRN
     public string Status
     {
         get => _status;

@@ -1,6 +1,7 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using MVVM_play.ViewModels;
 
 namespace MVVM_play.Views
@@ -13,12 +14,27 @@ namespace MVVM_play.Views
 
             // Ensure the page is loaded before modifying the DataGrid columns
             this.Loaded += MarPage_Loaded;
+
+            // Change to grouping display
+            if (DataContext is MarViewModel viewModel)
+            {
+                MarDataGrid.RowGroupHeaderPropertyNameAlternative = "Status";
+                MarDataGrid.ItemsSource = viewModel.GroupedMedications().View;
+            }
         }
 
         private void MarPage_Loaded(object sender, RoutedEventArgs e)
         {
             AddTimeSlotColumns();
         }
+
+        private void MarDataGrid_LoadingRowGroup(object sender, DataGridRowGroupHeaderEventArgs e)
+        {
+            ICollectionViewGroup group = e.RowGroupHeader.CollectionViewGroup;
+            var item = group.GroupItems[0] as MedRecordViewModel;
+            e.RowGroupHeader.PropertyValue = item?.Status;
+        }
+
 
         private void AddTimeSlotColumns()
         {
