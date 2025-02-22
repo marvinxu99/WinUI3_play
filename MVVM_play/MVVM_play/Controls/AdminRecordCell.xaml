@@ -11,11 +11,11 @@
     VerticalAlignment="Stretch">
 
     <!-- The Border will fill its parent; its size/vertical alignment will be adjusted in code-behind -->
-    <Border x:Name="CellBorder" 
+    <Border x:Name="AdminCell" 
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" 
             CornerRadius="4" 
-            DoubleTapped="CellBorder_DoubleTapped">
+            DoubleTapped="AdminCell_DoubleTapped">
         <TextBlock x:Name="TimeTextBlock" 
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"/>

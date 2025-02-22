@@ -46,12 +46,12 @@ namespace MVVM_play.Controls
                 var entry = medRecord[TimeSlot];
                 if (entry is AdminResultViewModel)
                 {
-                    CellBorder.Height = e.NewSize.Height * 0.3;
+                    AdminCell.Height = e.NewSize.Height * 0.3;
                 }
                 else if (entry is AdminTaskViewModel)
                 {
                     // For pending tasks, use 80% of the new height.
-                    CellBorder.Height = e.NewSize.Height * 0.8;
+                    AdminCell.Height = e.NewSize.Height * 0.8;
                 }
             }
         }
@@ -69,32 +69,32 @@ namespace MVVM_play.Controls
                     if (entry is AdminResultViewModel documented)
                     {
                         // For documented results, position the border at the bottom and fill only 50% of the cell height.
-                        CellBorder.VerticalAlignment = VerticalAlignment.Bottom;
+                        AdminCell.VerticalAlignment = VerticalAlignment.Bottom;
 
                         // If ActualHeight is available, set height to 50%; otherwise, leave it to SizeChanged to update.
                         if (this.ActualHeight > 0)
                         {
-                            CellBorder.Height = this.ActualHeight * 0.3;
+                            AdminCell.Height = this.ActualHeight * 0.3;
                         }
 
-                        CellBorder.Background = new SolidColorBrush(Colors.LightBlue);
+                        AdminCell.Background = new SolidColorBrush(Colors.LightBlue);
 
                         TimeTextBlock.Text = documented.ActualDose ?? "";
                     }
                     else if (entry is AdminTaskViewModel adminTask)
                     {
                         // For pending tasks: center-aligned, height 80% of the cell.
-                        CellBorder.VerticalAlignment = VerticalAlignment.Center;
+                        AdminCell.VerticalAlignment = VerticalAlignment.Center;
                         if (this.ActualHeight > 0)
                         {
-                            CellBorder.Height = this.ActualHeight * 0.8;
+                            AdminCell.Height = this.ActualHeight * 0.8;
                         }
 
                         // Determine background color:
                         // 1. Red if the scheduled time is old (< DateTime.Now.AddHours(-1)).
                         if (adminTask.ScheduledTime.HasValue && adminTask.ScheduledTime.Value < DateTime.Now.AddHours(-1))
                         {
-                            CellBorder.Background = new SolidColorBrush(Colors.Red);
+                            AdminCell.Background = new SolidColorBrush(Colors.Red);
                             TimeTextBlock.Text = (adminTask.Dose ?? "") + "\nLast Admin:";
                         }
                         else
@@ -103,13 +103,13 @@ namespace MVVM_play.Controls
                             var pendingEntry = medRecord.PendingAdminEntry;
                             if (pendingEntry != null && object.ReferenceEquals(pendingEntry, adminTask))
                             {
-                                CellBorder.Background = new SolidColorBrush(Colors.LightGreen);
+                                AdminCell.Background = new SolidColorBrush(Colors.LightGreen);
                                 TimeTextBlock.Text = (adminTask.Dose ?? "") + "\nLast Admin:";
                             }
                             else
                             {
                                 // 3. Otherwise, show LightGray.
-                                CellBorder.Background = new SolidColorBrush(Colors.LightGray);
+                                AdminCell.Background = new SolidColorBrush(Colors.LightGray);
                                 TimeTextBlock.Text = adminTask.Dose ?? "";
                             }
                         }
@@ -118,17 +118,17 @@ namespace MVVM_play.Controls
                 else
                 {
                     TimeTextBlock.Text = string.Empty;
-                    CellBorder.Background = new SolidColorBrush(Colors.Transparent);
+                    AdminCell.Background = new SolidColorBrush(Colors.Transparent);
                 }
             }
             else
             {
                 TimeTextBlock.Text = string.Empty;
-                CellBorder.Background = new SolidColorBrush(Colors.Transparent);
+                AdminCell.Background = new SolidColorBrush(Colors.Transparent);
             }
         }
 
-        private async void CellBorder_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        private async void AdminCell_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("DoubleTapped event fired.");
 
