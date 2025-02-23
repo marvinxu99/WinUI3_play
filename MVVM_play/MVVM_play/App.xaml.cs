@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
+using MVVM_play.Data.DbInitializer;
 using MVVM_play.Models;
 using MVVM_play.Services;
 using MVVM_play.ViewModels;
@@ -35,7 +36,7 @@ public partial class App : Application
         _host = CreateHost();
 
         //Seed Database if needed
-        //DbInitializer.Initialize();
+        DbInitializer.Initialize();
     }
 
     private static IHost CreateHost()

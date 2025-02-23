@@ -1,4 +1,5 @@
 ﻿using MVVM_play.Models;
+using MVVM_play.Services;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -11,14 +12,14 @@ public static partial class InitCodeValueSet
     public static async Task SeedAsync()
     {
         var dbContext = App.GetService<DatabaseContext>();
-        //using var logger = App.GetService<LoggingService>();
+        using var logger = App.GetService<LoggingService>();
 
         // Instead of checking Any() on the entire table (_dbContext.CodeValueSet.Any()),
         // check for a specific key to improve performance
         //if (_dbContext.CodeValueSet.Any())  return;
         if (dbContext.CodeValueSet.Any(cs => cs.CodeSet == 2)) return;
 
-        //logger.Information("Seeding CodeValueSet...");
+        logger.Information("Seeding CodeValueSet...");
 
         var suCodesets = new (int, string)[]
         {
@@ -86,7 +87,7 @@ public static partial class InitCodeValueSet
         {
             CodeSet = cs.Item1,
             Display = cs.Item2,
-            DisplayKey = MyRegex().Replace(cs.Item2, "").ToUpper(),
+            DisplayKey = ConvertToKey().Replace(cs.Item2, "").ToUpper(),
             Definition = cs.Item2,
             Description = cs.Item2
         }).ToList();
@@ -94,10 +95,10 @@ public static partial class InitCodeValueSet
         dbContext.CodeValueSet.AddRange(cvEntities);
         await dbContext.SaveChangesAsync();
 
-        //logger.Information("Seeding CodeValueSet completed!");
+        logger.Information("Seeding CodeValueSet completed!");
 
     }
 
     [GeneratedRegex("[^0-9a-zA-Z]+")]
-    private static partial Regex MyRegex();
+    private static partial Regex ConvertToKey();
 }
