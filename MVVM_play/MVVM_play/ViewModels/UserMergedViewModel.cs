@@ -69,18 +69,43 @@ public partial class UserMergedViewModel : ObservableObject
     {
         //var usersWithProfiles = await _dbContext.Users
         //    .Include(u => u.UserProfile)  // Load related UserProfile data
-        //    .Select(u => new UserWithProfileViewModel(u, u.UserProfile))
+        //    .Select(u => new UserWithProfile(u, u.UserProfile.FirstOrDefault()))
+        //    .ToListAsync();
+
+        //var usersWithProfiles = await _dbContext.Users
+        //    .Join(
+        //        _dbContext.UserProfiles.DefaultIfEmpty(), // LEFT JOIN equivalent
+        //        user => user.Id,
+        //        profile => profile.UserId,
+        //        (user, profile) => new UserWithProfile(user, profile)
+        //    )
         //    .ToListAsync();
 
         var usersWithProfiles = await _dbContext.Users
-        .GroupJoin(
-            _dbContext.UserProfiles, // Join with UserProfiles table
-            user => user.Id,         // Primary Key in Users table
-            profile => profile.UserId, // Foreign Key in UserProfiles
-            (user, profiles) => new { user, profile = profiles.FirstOrDefault() } // LEFT JOIN
-        )
-        .Select(up => new UserWithProfile(up.user, up.profile))
-        .ToListAsync();
+            .GroupJoin(
+                _dbContext.UserProfiles, // Table to join
+                user => user.Id,          // Primary Key in Users table
+                profile => profile.UserId, // Foreign Key in UserProfiles
+                (user, profiles) => new { user, profiles }
+            )
+            .SelectMany(
+                x => x.profiles.DefaultIfEmpty(),  // Ensure LEFT JOIN behavior
+                (x, profile) => new UserWithProfile(x.user, profile)
+            )
+            .ToListAsync();
+
+
+        // WORKING FOR SQLite
+        //var usersWithProfiles = await _dbContext.Users
+        //.GroupJoin(
+        //    _dbContext.UserProfiles, // Join with UserProfiles table
+        //    user => user.Id,         // Primary Key in Users table
+        //    profile => profile.UserId, // Foreign Key in UserProfiles
+        //    (user, profiles) => new { user, profile = profiles.FirstOrDefault() } // LEFT JOIN
+        //)
+        //.Select(up => new UserWithProfile(up.user, up.profile))
+        //.ToListAsync();
+
 
         //UsersWithProfiles.Clear();
         //foreach (var item in usersWithProfiles)

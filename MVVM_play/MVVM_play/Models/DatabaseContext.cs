@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,9 +42,15 @@ public partial class DatabaseContext : DbContext
     // BELOW IS NOT COMPATIBILIE WITH CLI
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        //string dbPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "app.db");
-        string dbPath = Path.Combine("E:/eDev/csharp/WinUI/MVVM_play/MVVM_play", "app.db");
-        options.UseSqlite($"Data Source={dbPath}");
+        // =====SQLite
+        // string dbPath = Path.Combine("E:/eDev/csharp/WinUI/MVVM_play/MVVM_play", "app.db");
+        // options.UseSqlite($"Data Source={dbPath}");
+        // =====SQLite
+
+        // PostgreSQL
+        string connectionString = "Host=localhost;Port=5432;Database=mvvm_db;Username=winter;Password=123456";
+        options.UseNpgsql(connectionString, npgsqlOptions => npgsqlOptions.CommandTimeout(300));
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -87,21 +95,44 @@ public partial class DatabaseContext : DbContext
     {
         var columns = new List<string>();
 
-        using (var conn = this.Database.GetDbConnection())
+        // Open the connection manually(EF Core will not dispose it here)
+        await this.Database.OpenConnectionAsync();
+
+        try
         {
-            await conn.OpenAsync();
-            using (var cmd = conn.CreateCommand())
+            var cmd = this.Database.GetDbConnection().CreateCommand();
+            cmd.CommandText = @"
+                        SELECT column_name 
+                        FROM information_schema.columns 
+                        WHERE table_schema = 'public'
+                        AND table_name = @tableName";
+            var param = cmd.CreateParameter();
+            param.ParameterName = "tableName";  // Important: Npgsql wants just "tableName" here, not "@tableName"
+            param.Value = tableName;  // .ToLower();  // PostgreSQL stores table names in lowercase by default
+            param.DbType = DbType.String; // Explicitly set DbType
+            cmd.Parameters.Add(param);
+
+            using (var reader = await cmd.ExecuteReaderAsync())
             {
-                cmd.CommandText = $"PRAGMA table_info({tableName})";
-                using (var reader = await cmd.ExecuteReaderAsync())
+                while (await reader.ReadAsync())
                 {
-                    while (await reader.ReadAsync())
-                    {
-                        columns.Add(reader.GetString(1)); // Column name
-                    }
+                    //====SQLite ====
+                    //columns.Add(reader.GetString(1)); // Column name
+                    //====SQLite ====
+
+                    // ====POSTGRESQL======
+                    columns.Add(reader.GetString(0)); // Column name
+                    // ====POSTGRESQL======
                 }
             }
+
         }
+        finally
+        {
+            // Close only if you manually opened it
+            this.Database.CloseConnection();
+        }
+
 
         return columns;
     }
@@ -111,25 +142,43 @@ public partial class DatabaseContext : DbContext
     {
         var data = new List<Dictionary<string, object>>();
 
-        using (var conn = this.Database.GetDbConnection())
+        // Validate and sanitize table name to prevent SQL injection
+        if (string.IsNullOrWhiteSpace(tableName) || !Regex.IsMatch(tableName, @"^[a-zA-Z0-9_]+$"))
         {
-            await conn.OpenAsync();
-            using (var cmd = conn.CreateCommand())
+            throw new ArgumentException("Invalid table name.");
+        }
+
+        // Open the connection manually (EF Core will not dispose it here)
+        await this.Database.OpenConnectionAsync();
+
+        try
+        {
+            var cmd = this.Database.GetDbConnection().CreateCommand();
+
+            // **Directly inject the validated table name (not as a parameter)**
+            cmd.CommandText = $"SELECT * FROM public.\"{tableName}\"";  // Enclose in double quotes to handle case sensitivity
+
+            using (var reader = await cmd.ExecuteReaderAsync())
             {
-                cmd.CommandText = $"SELECT * FROM {tableName}";
-                using (var reader = await cmd.ExecuteReaderAsync())
+                while (await reader.ReadAsync())
                 {
-                    while (await reader.ReadAsync())
+                    var row = new Dictionary<string, object>();
+                    for (int i = 0; i < reader.FieldCount; i++)
                     {
-                        var row = new Dictionary<string, object>();
-                        for (int i = 0; i < reader.FieldCount; i++)
-                        {
-                            row[reader.GetName(i)] = reader.GetValue(i);
-                        }
-                        data.Add(row);
+                        row[reader.GetName(i)] = reader.GetValue(i);
                     }
+                    data.Add(row);
                 }
             }
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e.Message);
+        }
+        finally
+        {
+            // Close only if you manually opened it
+            this.Database.CloseConnection();
         }
 
         return data;

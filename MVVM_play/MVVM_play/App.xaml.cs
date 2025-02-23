@@ -33,6 +33,9 @@ public partial class App : Application
         LoadEnvironmentVariables(); // Load .env variables at startup
 
         _host = CreateHost();
+
+        //Seed Database if needed
+        //DbInitializer.Initialize();
     }
 
     private static IHost CreateHost()
@@ -41,6 +44,7 @@ public partial class App : Application
             .ConfigureServices((context, services) =>
             {
                 // Register DbContext
+                //services.AddDbContext<DatabaseContext>();
                 services.AddDbContext<DatabaseContext>();
 
                 // Register DbContext

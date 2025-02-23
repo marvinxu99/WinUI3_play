@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.IO;
 
 namespace MVVM_play.Models;
 
@@ -9,8 +8,14 @@ public partial class LoggingDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
+        // SQLite
         //string dbPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "app.db");
-        string dbPath = Path.Combine("E:/eDev/csharp/WinUI/MVVM_play/MVVM_play", "logging.db");
-        options.UseSqlite($"Data Source={dbPath}");
+        //string dbPath = Path.Combine("E:/eDev/csharp/WinUI/MVVM_play/MVVM_play", "logging.db");
+        //options.UseSqlite($"Data Source={dbPath}");
+
+        // PostgreSQL
+        string connectionString = "Host=localhost;Port=5432;Database=logging_db;Username=winter;Password=123456";
+        options.UseNpgsql(connectionString);
+
     }
 }
