@@ -18,7 +18,7 @@ public partial class MarViewModel : ObservableObject
         set => SetProperty(ref _patientId, value);
     }
 
-    private string _patientName;
+    private string _patientName = null!;
     public string PatientName
     {
         get => _patientName;

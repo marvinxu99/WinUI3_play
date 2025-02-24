@@ -5,9 +5,13 @@ public static class DbInitializer
     public static async void Initialize()
     {
         ;// Code Value Set
-        await InitCodeValueSet.SeedAsync();
+        await CodeValueSetSeeder.SeedAsync();
 
         // Code Values
+        var cvSeeder = new CodeValueSeeder();
+
+        // Codeset 2 - Admit Sources
+        await cvSeeder.SeedAsync();
 
     }
 }

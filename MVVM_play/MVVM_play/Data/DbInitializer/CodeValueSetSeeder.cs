@@ -1,18 +1,18 @@
-﻿using MVVM_play.Models;
+﻿using MVVM_play.Common;
+using MVVM_play.Models;
 using MVVM_play.Services;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MVVM_play.Data.DbInitializer;
 
-public static partial class InitCodeValueSet
+public static partial class CodeValueSetSeeder
 {
 
     public static async Task SeedAsync()
     {
         var dbContext = App.GetService<DatabaseContext>();
-        using var logger = App.GetService<LoggingService>();
+        var logger = App.GetService<LoggingService>();
 
         // Instead of checking Any() on the entire table (_dbContext.CodeValueSet.Any()),
         // check for a specific key to improve performance
@@ -87,7 +87,7 @@ public static partial class InitCodeValueSet
         {
             CodeSet = cs.Item1,
             Display = cs.Item2,
-            DisplayKey = ConvertToKey().Replace(cs.Item2, "").ToUpper(),
+            DisplayKey = CodeValueHelper.ConvertToKey(cs.Item2),
             Definition = cs.Item2,
             Description = cs.Item2
         }).ToList();
@@ -98,7 +98,4 @@ public static partial class InitCodeValueSet
         logger.Information("Seeding CodeValueSet completed!");
 
     }
-
-    [GeneratedRegex("[^0-9a-zA-Z]+")]
-    private static partial Regex ConvertToKey();
 }
