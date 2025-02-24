@@ -87,9 +87,6 @@ namespace MVVM_play.Data.DbInitializer
                       "LONG_BLOB", "LONG_TEXT", "MSWORD", "NONE", "PACS FOLD ID", "Paper", "PDF", "PNG", "PTIFF",
                       "RTF", "RVS", "TIFF", "? Unknown", "url", "VIDEO MPEG", "VOICE", "WINBMP", "WINEMF", "XHTML", "XML"] },
 
-
-                { 24, ["C", "Link", "O", "R", "? Unknown"] },
-
                 { 34, ["Allergy and Immunology", "Anesthesiology", "Emergency", "Family Practice", "Obstetrics", "Dermatology", "Urology", "Endocrinology", "Gastroenterology", "Nephrology", "Ophthalmology", "Pathology", "Pediatrics", "Radiation Oncology", "Dentistry", "Laboratory Medicine", "Newborn"] },
 
                 { 48, ["Active", "Combined", "Historical value - combined", "Deleted", "Draft", "Inactive", "Recall",
@@ -154,6 +151,32 @@ namespace MVVM_play.Data.DbInitializer
 
         }
 
+
+        //Public method to seed all required code sets
+        public async Task SeedAsync2()
+        {
+            // Add all CodeSets except 2 and 3
+            var codeSets = new Dictionary<int, (string Display, string Meaning, string Description, string Definition)[]>
+            {
+                // Codeset 24 - Doc Format
+                { 24, new (string Display, string Meaning, string Description, string Definition)[]
+                    {
+                        ("C", "CHILD", "Child", "Child Document"),
+                        ("Link", "LINK", "Linked Result", "Linked Result"),
+                        ("O", "ORPHAN", "Orphan", "Orphaned Document"),
+                        ("R", "ROOT", "Root", "Root Document"),
+                        ("? Unknown", "UNKNOWN", "Undefined Code", "Undefined Code")
+                    }
+                }
+            };
+
+            foreach (var codeSet in codeSets)
+            {
+                await SeedCodeValuesAsync2(codeSet.Key, codeSet.Value);
+            }
+
+        }
+
         // Generic method to handle multiple CodeSets efficiently
         private async Task SeedCodeValuesAsync(int codeSet, string[] codeValues)
         {
@@ -173,6 +196,34 @@ namespace MVVM_play.Data.DbInitializer
                     DisplayKey = ConvertToKey(cv_display),
                     Definition = cv_display,
                     Description = cv_display
+                })
+                .ToList();
+
+            await _dbContext.CodeValue.AddRangeAsync(cvEntities);
+            await _dbContext.SaveChangesAsync();
+
+            _logger.Information($"Seeding CodeSet {codeSet} completed!");
+        }
+
+        private async Task SeedCodeValuesAsync2(int codeSet, (string Display, string Meaning, string Description, string Definition)[] codeValues)
+        {
+            if (await _dbContext.CodeValue.AnyAsync(cv => cv.CodeSet == codeSet))
+            {
+                _logger.Information($"Code values for CodeSet {codeSet} were previously seeded!");
+                return;
+            }
+
+            _logger.Information($"Seeding CodeSet {codeSet} started...");
+
+            var cvEntities = codeValues
+                .Select(cv => new CodeValue
+                {
+                    CodeSet = codeSet,
+                    Display = cv.Display,
+                    DisplayKey = ConvertToKey(cv.Display),
+                    Definition = cv.Definition,
+                    Description = cv.Description,
+                    Meaning = cv.Meaning  // Assuming `Meaning` is a field in `CodeValue`
                 })
                 .ToList();
 

@@ -10,8 +10,11 @@ public static class DbInitializer
         // Code Values
         var cvSeeder = new CodeValueSeeder();
 
-        // Codeset 2 - Admit Sources
+        // Codesets with same display, meaning, definition & description
         await cvSeeder.SeedAsync();
+
+        // Codesets with different display, meaning, definition & description
+        await cvSeeder.SeedAsync2();
 
     }
 }
