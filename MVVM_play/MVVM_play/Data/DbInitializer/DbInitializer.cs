@@ -14,7 +14,7 @@ public static class DbInitializer
         await cvSeeder.SeedAsync();
 
         // Codesets with different display, meaning, definition & description
-        await cvSeeder.SeedAsync2();
+        //await cvSeeder.SeedAsync2();
 
     }
 }
